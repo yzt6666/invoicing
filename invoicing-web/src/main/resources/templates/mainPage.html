@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>小虎进销存管理系统</title>
+    <link rel="shortcut icon" th:href="@{/static/img/tiger.ico}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/static/bootstrap-3.3.7/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/font-awesome-4.7.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/mainPage.css}">
+    <link rel="stylesheet" th:href="@{/static/css/purchase/supplier.css}">
+    <link rel="stylesheet" th:href="@{/static/css/common.css}">
+    <script type="text/javascript" th:src="@{/static/jquery/jquery-3.0.0.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/bootstrap-3.3.7/dist/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/mainPage.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/purchase/supplier.js}"></script>
+
+</head>
+<body>
+<!-- xmlns:shiro="http://www.thymeleaf.org/thymeleaf-extras-shiro" -->
+<!--顶部-->
+<header class="navbar-wrapper">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/index">小虎进销存管理系统</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a>管理员账号</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle " data-toggle="dropdown">
+                            点我
+                            <span class="caret"></span>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">个人信息</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">切换账号</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">退出登录</a></li>
+                            </ul>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<!--左侧导航栏-->
+<aside class="sidebar navbar-fixed-top">
+    <nav class="sidebar-nav">
+        <ul th:id="menu">
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-shopping-cart"></span>
+                    <span class="sidebar-nav-item">订货管理</span>
+                    <span class="fa fa-angle-left menu-list" ></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/supplier/toSupplier}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
+                            <span>供应商管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/purchase/toPurchaseOrder}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-list-alt"></span>
+                            <span>采购订单</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-piggy-bank"></span>
+                    <span class="sidebar-nav-item">销售管理</span>
+                    <span class="fa fa-angle-left menu-list" ></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/customer/toCustomer}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
+                            <span>客户管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/sale/toSaleOrder}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-list-alt"></span>
+                            <span>销售订单</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-home"></span>
+                    <span class="sidebar-nav-item">库存管理</span>
+                    <span class="fa fa-angle-left menu-list" ></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/stock/toStocktaking}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-inbox"></span>
+                            <span>库存盘点</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/stock/toInbound}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-copy"></span>
+                            <span>商品入库</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/stock/toOutbound}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-paste"></span>
+                            <span>商品出库</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-pencil"></span>
+                    <span class="sidebar-nav-item">订单审核</span>
+                    <span class="fa fa-angle-left menu-list" ></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/orderAudit/toPurchaseAudit}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-star"></span>
+                            <span>采购单审核</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/orderAudit/toSaleAudit}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-star"></span>
+                            <span>销售单审核</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-book"></span>
+                    <span class="sidebar-nav-item">信息管理</span>
+                    <span class="fa fa-angle-left menu-list" ></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/message/toGoodsMessage}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-gift"></span>
+                            <span>商品信息</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/message/toEmployeeMessage}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
+                            <span>员工信息</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-cloud"></span>
+                    <span class="sidebar-nav-item">统计分析</span>
+                    <span class="fa fa-angle-left menu-list" ></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/analysis/toSaleAnalysis}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-piggy-bank"></span>
+                            <span>销售分析</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/analysis/toProfitAnalysis}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-yen"></span>
+                            <span>盈亏分析</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-hdd"></span>
+                    <span class="sidebar-nav-item">系统管理</span>
+                    <span class="fa fa-angle-left menu-list" ></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/system/toUserManage}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
+                            <span>用户权限管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/system/toBackUp}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-floppy-save"></span>
+                            <span>数据备份</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</aside>
+</body>
+<script>
+
+</script>
+</html>
