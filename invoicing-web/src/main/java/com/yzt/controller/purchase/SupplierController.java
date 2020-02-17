@@ -27,6 +27,7 @@ public class SupplierController {
 
     @RequestMapping("toSupplier")
     public String toSupplier(Model model) {
+        System.out.println("1");
         List<Supplier> suppliers = supplierService.allSupplier(0, pageSize);
         count = supplierService.selCount();
         totalPage = count % pageSize == 0 ? count / pageSize : count / pageSize +1;
