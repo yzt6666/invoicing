@@ -1,6 +1,7 @@
     .supplier-container {
         position: absolute;
-        overflow: auto;
+        /*overflow: auto;*/
+        height: 500px;
         padding-bottom: 10px;
         width: 85%;
     }

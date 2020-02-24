@@ -7,15 +7,10 @@
     <link rel="stylesheet" th:href="@{/static/bootstrap-3.3.7/dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/static/font-awesome-4.7.0/css/font-awesome.min.css}">
     <link rel="stylesheet" th:href="@{/static/css/mainPage.css}">
-    <link rel="stylesheet" th:href="@{/static/css/purchase/supplier.css}">
     <link rel="stylesheet" th:href="@{/static/css/common.css}">
-    <link rel="stylesheet" th:href="@{/static/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css}">
     <script type="text/javascript" th:src="@{/static/jquery/jquery-3.0.0.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/bootstrap-3.3.7/dist/js/bootstrap.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/mainPage.js}"></script>
-    <script type="text/javascript" th:src="@{/static/js/purchase/supplier.js}"></script>
-    <script type="text/javascript" th:src="@{/static/bootstrap-datetimepicker/js/moment-with-locales.min.js}"></script>
-    <script type="text/javascript" th:src="@{/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js}"></script>
 </head>
 <body>
 <!--顶部-->
@@ -185,69 +180,7 @@
         </ul>
     </nav>
 </aside>
-<div class="main-div">
-    <!--路径栏-->
-    <nav class="navbar navbar-inverse navbar-fixed-top navbar-style" role="navigation">
-        <i class="glyphicon glyphicon-home nav-font"></i>
-        <a th:href="@{/index}">首页</a>
-        <span>></span>
-        <span>订货管理</span>
-        <span>></span>
-        <span>采购订单</span>
-        <a th:href="@{/purchase/toPurchaseOrder}" class="btn btn-success btn-refresh" title="刷新">
-            <i class="glyphicon glyphicon-repeat refresh-font"></i>
-        </a>
-    </nav>
-    <div class="supplier-container">
-        <article class="common-article">
-            <div class="common-header">
-                <span class="float-left">
-                    <a th:href="@{/purchase/}" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i>填写订单</a>
-                </span>
-            </div>
-            <div class="row form-inline date-row">
-                <div class="col-sm-3 col-sm-offset-3">
-                    <div class="form-group">
-                        <label>开始日期：</label>
-                        <!--指定 date标记-->
-                        <div class="input-group date" id="datetimepicker1">
-                            <input type="text" class="form-control"/>
-                            <span class="input-group-addon">
-                               <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>结束日期：</label>
-                        <!--指定 date标记-->
-                        <div class="input-group date" id="datetimepicker2">
-                            <input type="text" class="form-control"/>
-                            <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </article>
-    </div>
 
 
-</div>
-<script>
-    $(function () {
-        $("#datetimepicker1").datetimepicker({
-            format: "YYYY-MM-DD",
-            locale: moment.locale("zh-cn")
-        });
-        $("#datetimepicker2").datetimepicker({
-            format: "YYYY-MM-DD",
-            locale: moment.locale("zh-cn")
-        });
-    });
-
-</script>
 </body>
 </html>

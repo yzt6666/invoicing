@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzt.mapper.ProductMapper">
+    <select id="allProduct" resultType="product">
+        select * from products limit #{0}, #{1}
+    </select>
+
+    <select id="dataCount" resultType="int">
+        select count(*) from products
+    </select>
+
+    <select id="selByID" resultType="product">
+        select categoryName, quantityPerUnit, unitsOnOrder, unitsInStock
+        from products p, categories c
+        where p.productID = #{0} and p.categoryID = c.categoryID;
+    </select>
+</mapper>

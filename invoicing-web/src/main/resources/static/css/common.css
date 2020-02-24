@@ -47,3 +47,7 @@
     vertical-align: middle;
     white-space: nowrap;
 }
+
+.date-row {
+    margin-top: 10px;
+}

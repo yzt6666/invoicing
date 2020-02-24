@@ -118,42 +118,21 @@
             </li>
             <li>
                 <a href="" class="menu-main" onclick="return false;">
-                    <span class="sidebar-nav-item-icon glyphicon glyphicon-pencil"></span>
-                    <span class="sidebar-nav-item">订单审核</span>
-                    <span class="fa fa-angle-left menu-list" ></span>
-                </a>
-                <ul class="collapse">
-                    <li>
-                        <a th:href="@{/orderAudit/toPurchaseAudit}">
-                            <span class="sidebar-nav-item-icon glyphicon glyphicon-star"></span>
-                            <span>采购单审核</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a th:href="@{/orderAudit/toSaleAudit}">
-                            <span class="sidebar-nav-item-icon glyphicon glyphicon-star"></span>
-                            <span>销售单审核</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="" class="menu-main" onclick="return false;">
                     <span class="sidebar-nav-item-icon glyphicon glyphicon-book"></span>
-                    <span class="sidebar-nav-item">信息管理</span>
+                    <span class="sidebar-nav-item">产品管理</span>
                     <span class="fa fa-angle-left menu-list" ></span>
                 </a>
                 <ul class="collapse">
                     <li>
-                        <a th:href="@{/message/toGoodsMessage}">
+                        <a th:href="@{/product/toProductMessage}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-gift"></span>
                             <span>商品信息</span>
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/message/toEmployeeMessage}">
+                        <a th:href="@{/product/add}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
-                            <span>员工信息</span>
+                            <span>新增产品</span>
                         </a>
                     </li>
                 </ul>
@@ -218,14 +197,14 @@
     <div class="supplier-container">
         <article class="common-article">
             <div class="common-header">
-            <span class="float-left">
-                <a onclick="supplierModal();" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>新增客户</a>
-            </span>
+                <span class="float-left">
+                    <a onclick="supplierModal();" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>新增客户</a>
+                </span>
                 <span class="float-center">
-                客户名称：
-                <input type="text" id="search" name="search" size="10"/>
-                <a class="btn btn-success">查询<i class="glyphicon glyphicon-search"></i></a>
-            </span>
+                    客户名称：
+                    <input type="text" id="search" name="search" size="10"/>
+                    <a class="btn btn-success">查询<i class="glyphicon glyphicon-search"></i></a>
+                </span>
                 <span class="pd-5 float-right">共有数据：<strong th:text="${count}"></strong>条</span>
             </div>
             <div class="common-body">

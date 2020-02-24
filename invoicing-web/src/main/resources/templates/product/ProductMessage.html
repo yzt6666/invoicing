@@ -9,10 +9,12 @@
     <link rel="stylesheet" th:href="@{/static/css/mainPage.css}">
     <link rel="stylesheet" th:href="@{/static/css/purchase/supplier.css}">
     <link rel="stylesheet" th:href="@{/static/css/common.css}">
+    <link rel="stylesheet" th:href="@{/static/css/message/productMessage.css}">
     <script type="text/javascript" th:src="@{/static/jquery/jquery-3.0.0.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/bootstrap-3.3.7/dist/js/bootstrap.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/mainPage.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/purchase/supplier.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/message/productMessage.js}"></script>
 </head>
 <body>
 <!--顶部-->
@@ -118,42 +120,21 @@
             </li>
             <li>
                 <a href="" class="menu-main" onclick="return false;">
-                    <span class="sidebar-nav-item-icon glyphicon glyphicon-pencil"></span>
-                    <span class="sidebar-nav-item">订单审核</span>
-                    <span class="fa fa-angle-left menu-list" ></span>
-                </a>
-                <ul class="collapse">
-                    <li>
-                        <a th:href="@{/orderAudit/toPurchaseAudit}">
-                            <span class="sidebar-nav-item-icon glyphicon glyphicon-star"></span>
-                            <span>采购单审核</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a th:href="@{/orderAudit/toSaleAudit}">
-                            <span class="sidebar-nav-item-icon glyphicon glyphicon-star"></span>
-                            <span>销售单审核</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="" class="menu-main" onclick="return false;">
                     <span class="sidebar-nav-item-icon glyphicon glyphicon-book"></span>
-                    <span class="sidebar-nav-item">信息管理</span>
+                    <span class="sidebar-nav-item">产品管理</span>
                     <span class="fa fa-angle-left menu-list" ></span>
                 </a>
                 <ul class="collapse">
                     <li>
-                        <a th:href="@{/message/toGoodsMessage}">
+                        <a th:href="@{/product/toProductMessage}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-gift"></span>
-                            <span>商品信息</span>
+                            <span>产品信息</span>
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/message/toEmployeeMessage}">
+                        <a th:href="@{/product/add}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
-                            <span>员工信息</span>
+                            <span>新增产品</span>
                         </a>
                     </li>
                 </ul>
@@ -213,7 +194,7 @@
         <span>销售管理</span>
         <span>></span>
         <span>客户管理</span>
-        <a th:href="@{/customer/toCustomer}" class="btn btn-success btn-refresh" title="刷新"><i class="glyphicon glyphicon-repeat refresh-font"></i></a>
+        <a th:href="@{/product/toProductMessage}" class="btn btn-success btn-refresh" title="刷新"><i class="glyphicon glyphicon-repeat refresh-font"></i></a>
     </nav>
     <div class="supplier-container">
         <article class="common-article">
@@ -232,29 +213,25 @@
                 <table class="table table-bordered table-hover common-table table-striped">
                     <thead>
                     <tr class="info">
-                        <th>供应商编号</th>
-                        <th>公司名称</th>
-                        <th>联系人</th>
-                        <th>联系人职位</th>
-                        <th>地址</th>
-                        <th>城市</th>
-                        <th>电话</th>
-                        <th>传真</th>
-                        <th>邮政编码</th>
+                        <th></th>
+                        <th>产品编号</th>
+                        <th>产品名称</th>
+                        <th>单价</th>
+                        <th>供应商名称</th>
                         <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="customers:${customers}">
-                        <td th:text="${customers.customerID}"></td>
-                        <td th:text="${customers.companyName}"></td>
-                        <td th:text="${customers.contactName}"></td>
-                        <td th:text="${customers.contactTitle}"></td>
-                        <td th:text="${customers.address}"></td>
-                        <td th:text="${customers.city}"></td>
-                        <td th:text="${customers.phone}"></td>
-                        <td th:text="${customers.fax}"></td>
-                        <td th:text="${customers.postalCode}"></td>
+                    <tr th:each="products:${products}">
+                        <td>
+                            <a href="" class="expandProduct" onclick="return false;">
+                                <span class="fa fa-angle-right" style="color: black;"></span>
+                            </a>
+                        </td>
+                        <td th:text="${products.productID}"></td>
+                        <td th:text="${products.productName}"></td>
+                        <td th:text="${products.unitPrice}"></td>
+                        <td th:text="${products.supplierID}"></td>
                         <td>
                             <a onclick="addSupplier();" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i>编辑</a>
                             <a onclick="addSupplier();" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i>删除</a>
@@ -264,39 +241,39 @@
                 </table>
                 <div align="center">
                     <ul class="pagination">
-                        <li><a th:href="@{/customer/toCustomer}">首页</a></li>
+                        <li><a th:href="@{/product/toProductMessage}">首页</a></li>
                         <li th:class="${currentPage == 1}?'disabled':''">
-                            <a th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage - 1}}">&laquo;</a>
+                            <a th:href="@{'/product/productInfo?currentPage=' + ${currentPage - 1}}">&laquo;</a>
                         </li>
                         <li>
-                            <a th:if="${currentPage - 4 >= 1  && currentPage == totalPage}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage - 4}}">[[${currentPage - 4}]]</a>
+                            <a th:if="${currentPage - 4 >= 1  && currentPage == totalPage}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage - 4}}">[[${currentPage - 4}]]</a>
                         </li>
                         <li>
-                            <a th:if="${currentPage - 3 >= 1  && currentPage == totalPage}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage - 3}}">[[${currentPage - 3}]]</a>
+                            <a th:if="${currentPage - 3 >= 1  && currentPage == totalPage}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage - 3}}">[[${currentPage - 3}]]</a>
                         </li>
                         <li>
-                            <a th:if="${currentPage - 2 >= 1}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage - 2}}">[[${currentPage - 2}]]</a>
+                            <a th:if="${currentPage - 2 >= 1}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage - 2}}">[[${currentPage - 2}]]</a>
                         </li>
                         <li>
-                            <a th:if="${currentPage - 1 >= 1}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage - 1}}">[[${currentPage - 1}]]</a>
+                            <a th:if="${currentPage - 1 >= 1}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage - 1}}">[[${currentPage - 1}]]</a>
                         </li>
-                        <li class="active"><a th:href="@{'/customer/customerInfo?currentPage' + ${currentPage}}" th:text="${currentPage}">[[${currentPage}]]</a></li>
+                        <li class="active"><a th:href="@{'/product/productInfo?currentPage' + ${currentPage}}" th:text="${currentPage}">[[${currentPage}]]</a></li>
                         <li>
-                            <a th:if="${currentPage + 1 <= totalPage}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage + 1}}">[[${currentPage + 1}]]</a>
-                        </li>
-                        <li>
-                            <a th:if="${currentPage + 2 <= totalPage}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage + 2}}">[[${currentPage + 2}]]</a>
+                            <a th:if="${currentPage + 1 <= totalPage}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage + 1}}">[[${currentPage + 1}]]</a>
                         </li>
                         <li>
-                            <a th:if="${currentPage + 3 <= totalPage  && currentPage == totalPage}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage + 3}}">[[${currentPage + 3}]]</a>
+                            <a th:if="${currentPage + 2 <= totalPage}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage + 2}}">[[${currentPage + 2}]]</a>
                         </li>
                         <li>
-                            <a th:if="${currentPage + 4 <= totalPage  && currentPage == totalPage}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage + 4}}">[[${currentPage + 4}]]</a>
+                            <a th:if="${currentPage + 3 <= totalPage  && currentPage == totalPage}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage + 3}}">[[${currentPage + 3}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage + 4 <= totalPage  && currentPage == totalPage}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage + 4}}">[[${currentPage + 4}]]</a>
                         </li>
                         <li th:class="${currentPage == totalPage} ? 'disabled' : ''">
-                            <a th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage + 1}}">&raquo;</a>
+                            <a th:href="@{'/product/productInfo?currentPage=' + ${currentPage + 1}}">&raquo;</a>
                         </li>
-                        <li><a th:href="@{'/customer/customerInfo?currentPage=' + ${totalPage}}">尾页</a></li>
+                        <li><a th:href="@{'/product/productInfo?currentPage=' + ${totalPage}}">尾页</a></li>
                     </ul>
                 </div>
             </div>

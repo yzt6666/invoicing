@@ -118,42 +118,21 @@
             </li>
             <li>
                 <a href="" class="menu-main" onclick="return false;">
-                    <span class="sidebar-nav-item-icon glyphicon glyphicon-pencil"></span>
-                    <span class="sidebar-nav-item">订单审核</span>
-                    <span class="fa fa-angle-left menu-list" ></span>
-                </a>
-                <ul class="collapse">
-                    <li>
-                        <a th:href="@{/orderAudit/toPurchaseAudit}">
-                            <span class="sidebar-nav-item-icon glyphicon glyphicon-star"></span>
-                            <span>采购单审核</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a th:href="@{/orderAudit/toSaleAudit}">
-                            <span class="sidebar-nav-item-icon glyphicon glyphicon-star"></span>
-                            <span>销售单审核</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="" class="menu-main" onclick="return false;">
                     <span class="sidebar-nav-item-icon glyphicon glyphicon-book"></span>
-                    <span class="sidebar-nav-item">信息管理</span>
+                    <span class="sidebar-nav-item">产品管理</span>
                     <span class="fa fa-angle-left menu-list" ></span>
                 </a>
                 <ul class="collapse">
                     <li>
-                        <a th:href="@{/message/toGoodsMessage}">
+                        <a th:href="@{/product/toProductMessage}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-gift"></span>
                             <span>商品信息</span>
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/message/toEmployeeMessage}">
+                        <a th:href="@{/product/add}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
-                            <span>员工信息</span>
+                            <span>新增产品</span>
                         </a>
                     </li>
                 </ul>
@@ -218,14 +197,14 @@
     <div class="supplier-container">
         <article class="common-article">
             <div class="common-header">
-            <span class="float-left">
-                <a onclick="supplierModal();" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>新增供应商</a>
-            </span>
+                <span class="float-left">
+                    <a onclick="supplierModal();" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>新增供应商</a>
+                </span>
                 <span class="float-center">
-                供应商名称：
-                <input type="text" id="search" name="search" size="10"/>
-                <a class="btn btn-success">查询<i class="glyphicon glyphicon-search"></i></a>
-            </span>
+                    供应商名称：
+                    <input type="text" id="search" name="search" size="10"/>
+                    <a class="btn btn-success">查询<i class="glyphicon glyphicon-search"></i></a>
+                </span>
                 <span class="pd-5 float-right">共有数据：<strong th:text="${count}"></strong>条</span>
             </div>
             <div class="common-body">
@@ -315,43 +294,64 @@
                 <h4 class="modal-title">新增供应商</h4>
             </div>
             <div class="modal-body">
-                <form class="form-group">
+                <form class="form-horizontal">
                     <div class="form-group">
-                        <label for="companyName">公司名称</label>
-                        <span style="color: red">*</span>
-                        <input type="text" id="companyName" name="companyName" class="form-control"/>
+                        <label for="companyName" class="col-sm-2 control-label">
+                            <span style="color: red;">*</span>公司名称
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="companyName" name="companyName" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="contactName">联系人</label>
-                        <span style="color: red">*</span>
-                        <input type="text" id="contactName" name="contactName" class="form-control"/>
+                        <label for="contactName" class="col-sm-2 control-label">
+                            <span style="color: red">*</span>联系人
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="contactName" name="contactName" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="contactTitle">联系人职位</label>
-                        <input type="text" id="contactTitle" name="contactTitle" class="form-control"/>
+                        <label for="contactTitle" class="col-sm-2 control-label">职位</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="contactTitle" name="contactTitle" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="address">地址</label>
-                        <span style="color: red">*</span>
-                        <input type="text" id="address" name="address" class="form-control"/>
+                        <label for="address" class="col-sm-2 control-label">
+                            <span style="color: red">*</span>地址
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="address" name="address" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="city">城市</label>
-                        <span style="color: red">*</span>
-                        <input type="text" id="city" name="city" class="form-control"/>
+                        <label for="city" class="col-sm-2 control-label">
+                            <span style="color: red">*</span>城市
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="city" name="city" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="phone">电话</label>
-                        <span style="color: red">*</span>
-                        <input type="text" id="phone" name="phone" class="form-control"/>
+                        <label for="phone" class="col-sm-2 control-label">
+                            <span style="color: red">*</span>电话
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="phone" name="phone" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="fax">传真</label>
-                        <input type="text" id="fax" name="fax" class="form-control"/>
+                        <label for="fax" class="col-sm-2 control-label">传真</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="fax" name="fax" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="postalCode">邮政编码</label>
-                        <input type="text" id="postalCode" name="postalCode" class="form-control"/>
+                        <label for="postalCode" class="col-sm-2 control-label">邮政编码</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="postalCode" name="postalCode" class="form-control"/>
+                        </div>
                     </div>
                 </form>
             </div>

@@ -120,42 +120,21 @@
             </li>
             <li>
                 <a href="" class="menu-main" onclick="return false;">
-                    <span class="sidebar-nav-item-icon glyphicon glyphicon-pencil"></span>
-                    <span class="sidebar-nav-item">订单审核</span>
-                    <span class="fa fa-angle-left menu-list" ></span>
-                </a>
-                <ul class="collapse">
-                    <li>
-                        <a th:href="@{/orderAudit/toPurchaseAudit}">
-                            <span class="sidebar-nav-item-icon glyphicon glyphicon-star"></span>
-                            <span>采购单审核</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a th:href="@{/orderAudit/toSaleAudit}">
-                            <span class="sidebar-nav-item-icon glyphicon glyphicon-star"></span>
-                            <span>销售单审核</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="" class="menu-main" onclick="return false;">
                     <span class="sidebar-nav-item-icon glyphicon glyphicon-book"></span>
                     <span class="sidebar-nav-item">信息管理</span>
                     <span class="fa fa-angle-left menu-list" ></span>
                 </a>
                 <ul class="collapse">
                     <li>
-                        <a th:href="@{/message/toGoodsMessage}">
+                        <a th:href="@{/product/toProductMessage}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-gift"></span>
                             <span>商品信息</span>
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/message/toEmployeeMessage}">
+                        <a th:href="@{/product/add}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
-                            <span>员工信息</span>
+                            <span>新增产品</span>
                         </a>
                     </li>
                 </ul>

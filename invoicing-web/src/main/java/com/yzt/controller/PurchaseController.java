@@ -1,4 +1,4 @@
-package com.yzt.controller.purchase;
+package com.yzt.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,9 +7,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/purchase")
 public class PurchaseController {
 
-
-    @RequestMapping("toPurchaseOrder")
+    @RequestMapping("purchases")
     public String toPurchaseOrder() {
         return "/purchase/purchaseOrder";
+    }
+
+    @RequestMapping("add")
+    public String toAdd() {
+        return "/purchase/addOrder";
     }
 }
