@@ -7,10 +7,13 @@
     <link rel="stylesheet" th:href="@{/static/bootstrap-3.3.7/dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/static/font-awesome-4.7.0/css/font-awesome.min.css}">
     <link rel="stylesheet" th:href="@{/static/css/mainPage.css}">
+    <link rel="stylesheet" th:href="@{/static/css/purchase/supplier.css}">
     <link rel="stylesheet" th:href="@{/static/css/common.css}">
+    <link rel="stylesheet" th:href="@{/static/css/order.css}">
     <script type="text/javascript" th:src="@{/static/jquery/jquery-3.0.0.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/bootstrap-3.3.7/dist/js/bootstrap.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/mainPage.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/purchase/purchaseOrder.js}"></script>
 </head>
 <body>
 <!--顶部-->
@@ -59,7 +62,7 @@
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/purchase/toPurchaseOrder}">
+                        <a th:href="@{/purchase/purchaseOrder}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-list-alt"></span>
                             <span>采购订单</span>
                         </a>
@@ -80,7 +83,7 @@
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/sale/toSaleOrder}">
+                        <a th:href="@{/sale/saleOrder}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-list-alt"></span>
                             <span>销售订单</span>
                         </a>
@@ -180,6 +183,83 @@
         </ul>
     </nav>
 </aside>
+
+<div class="main-div">
+    <!--路径栏-->
+    <nav class="navbar navbar-inverse navbar-fixed-top navbar-style" role="navigation">
+        <i class="glyphicon glyphicon-home nav-font"></i>
+        <a th:href="@{/index}">首页</a>
+        <span>></span>
+        <span>订货管理</span>
+        <span>></span>
+        <span><a th:href="@{/purchase/purchaseOrder}">采购订单</a></span>
+        <span>></span>
+        <span>填写订单</span>
+        <a th:href="@{/purchase/purchaseOrder}" class="btn btn-success btn-refresh" title="刷新"><i class="glyphicon glyphicon-repeat refresh-font"></i></a>
+    </nav>
+    <div class="order-container">
+        <div class="row form-inline pd-row">
+            <div class="col-sm-8 col-sm-offset-2">
+                <div class="form-group">
+                    <label>备注：</label>
+                    <div class="input-group" >
+                        <input id="remark" name="remark" type="text" class="form-control" style="width: 1000px"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row form-inline pd-row">
+            <div class="col-sm-3 col-sm-offset-3">
+                <div class="form-group">
+                    <label>产品种类：</label>
+                    <select class="form-control" id="categoryID" name="categoryID">
+                        <option th:each="categories:${categories}" th:text="${categories.categoryName}" th:value="${categories.categoryID}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>产品名称：</label>
+                    <select class="form-control" id="productID" name="productID">
+                        <option value="" selected hidden></option>
+                        <option th:each="products:${products}" th:text="${products.productName}" th:value="${products.productID}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>供应商名称：</label>
+                    <select class="form-control" id="supplierID" name="supplierID">
+                        <option value="" selected hidden></option>
+                        <option th:each="suppliers:${suppliers}" th:text="${suppliers.companyName}" th:value="${suppliers.supplierID}"></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="order-body">
+            <table id="purchaseItem" class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr class="info">
+                        <th>产品编号</th>
+                        <th>产品名称</th>
+                        <th>规格</th>
+                        <th>进价</th>
+                        <th>数量</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td th:colspan="6">暂无数据</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row form-inline">
+            <div class="col-sm-2 col-sm-offset-5 pd-20">
+                <a id="saveInfo" class="btn btn-success"><i>提交</i></a>
+                <a onclick="deleteAll()" class="btn btn-danger"><i>重置</i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 </body>

@@ -13,7 +13,7 @@
     <script type="text/javascript" th:src="@{/static/jquery/jquery-3.0.0.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/bootstrap-3.3.7/dist/js/bootstrap.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/mainPage.js}"></script>
-    <script type="text/javascript" th:src="@{/static/js/purchase/supplier.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/purchase/purchaseOrder.js}"></script>
     <script type="text/javascript" th:src="@{/static/bootstrap-datetimepicker/js/moment-with-locales.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js}"></script>
 </head>
@@ -64,7 +64,7 @@
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/purchase/toPurchaseOrder}">
+                        <a th:href="@{/purchase/purchaseOrder}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-list-alt"></span>
                             <span>采购订单</span>
                         </a>
@@ -85,7 +85,7 @@
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/sale/toSaleOrder}">
+                        <a th:href="@{/sale/saleOrder}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-list-alt"></span>
                             <span>销售订单</span>
                         </a>
@@ -194,7 +194,7 @@
         <span>订货管理</span>
         <span>></span>
         <span>采购订单</span>
-        <a th:href="@{/purchase/toPurchaseOrder}" class="btn btn-success btn-refresh" title="刷新">
+        <a th:href="@{/purchase/purchaseOrder}" class="btn btn-success btn-refresh" title="刷新">
             <i class="glyphicon glyphicon-repeat refresh-font"></i>
         </a>
     </nav>
@@ -202,11 +202,22 @@
         <article class="common-article">
             <div class="common-header">
                 <span class="float-left">
-                    <a th:href="@{/purchase/}" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i>填写订单</a>
+                    <a th:href="@{/purchase/purchaseOrder/create}" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i>填写订单</a>
                 </span>
+                <span class="pd-5 float-right">共有数据：<strong th:text="${count}"></strong>条</span>
             </div>
             <div class="row form-inline date-row">
-                <div class="col-sm-3 col-sm-offset-3">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>订单状态：</label>
+                        <select id="flag" name="flag" class="form-control">
+                            <option value="" selected hidden></option>
+                            <option value="未完成">未完成</option>
+                            <option value="已完成">已完成</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-sm-offset-1">
                     <div class="form-group">
                         <label>开始日期：</label>
                         <!--指定 date标记-->
@@ -225,16 +236,86 @@
                         <div class="input-group date" id="datetimepicker2">
                             <input type="text" class="form-control"/>
                             <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="common-body">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
+                    <tr class="info">
+                        <th></th>
+                        <th>订单编号</th>
+                        <th>供应商名称</th>
+                        <th>采购员</th>
+                        <th>下单日期</th>
+                        <th>备注</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="map:${purchaseOrders}">
+                        <td>
+                            <a href="" class="expandOrder" onclick="return false;">
+                                <span class="fa fa-angle-right" style="color: black;"></span>
+                            </a>
+                        </td>
+                        <td th:text="${map.orderID}"></td>
+                        <td th:text="${map.companyName}"></td>
+                        <td th:text="${map.username}"></td>
+                        <td th:text="${map.orderDate}"></td>
+                        <td th:text="${map.remark}"></td>
+                        <td>
+                            <a onclick="addSupplier();" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i>编辑</a>
+                            <a onclick="addSupplier();" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i>删除</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div align="center">
+                    <ul class="pagination">
+                        <li><a th:href="@{/purchase/purchaseOrder}">首页</a></li>
+                        <li th:class="${currentPage == 1}?'disabled':''">
+                            <a th:if="${currentPage != 1}" th:href="@{'/purchase/orderInfo?currentPage=' + ${currentPage - 1}}">&laquo;</a>
+                            <a th:if="${currentPage == 1}">&laquo;</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 4 >= 1  && currentPage == totalPage}" th:href="@{'/purchase/orderInfo?currentPage=' + ${currentPage - 4}}">[[${currentPage - 4}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 3 >= 1  && currentPage == totalPage}" th:href="@{'/purchase/orderInfo?currentPage=' + ${currentPage - 3}}">[[${currentPage - 3}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 2 >= 1}" th:href="@{'/purchase/orderInfo?currentPage=' + ${currentPage - 2}}">[[${currentPage - 2}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 1 >= 1}" th:href="@{'/purchase/orderInfo?currentPage=' + ${currentPage - 1}}">[[${currentPage - 1}]]</a>
+                        </li>
+                        <li class="active"><a th:href="@{'/purchase/orderInfo?currentPage' + ${currentPage}}" th:text="${currentPage}">[[${currentPage}]]</a></li>
+                        <li>
+                            <a th:if="${currentPage + 1 <= totalPage}" th:href="@{'/purchase/orderInfo?currentPage=' + ${currentPage + 1}}">[[${currentPage + 1}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage + 2 <= totalPage}" th:href="@{'/purchase/orderInfo?currentPage=' + ${currentPage + 2}}">[[${currentPage + 2}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage + 3 <= totalPage  && currentPage == totalPage}" th:href="@{'/purchase/orderInfo?currentPage=' + ${currentPage + 3}}">[[${currentPage + 3}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage + 4 <= totalPage  && currentPage == totalPage}" th:href="@{'/purchase/orderInfo?currentPage=' + ${currentPage + 4}}">[[${currentPage + 4}]]</a>
+                        </li>
+                        <li th:class="${currentPage == totalPage} ? 'disabled' : ''">
+                            <a th:if="${currentPage != totalPage}" th:href="@{'/purchase/orderInfo?currentPage=' + ${currentPage + 1}}">&raquo;</a>
+                            <a th:if="${currentPage == totalPage}">&raquo;</a>
+                        </li>
+                        <li><a th:href="@{'/purchase/orderInfo?currentPage=' + ${totalPage}}">尾页</a></li>
+                    </ul>
+                </div>
+            </div>
         </article>
     </div>
-
-
 </div>
 <script>
     $(function () {

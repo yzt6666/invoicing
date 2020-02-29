@@ -61,7 +61,7 @@
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/purchase/toPurchaseOrder}">
+                        <a th:href="@{/purchase/purchaseOrder}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-list-alt"></span>
                             <span>采购订单</span>
                         </a>
@@ -82,7 +82,7 @@
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/sale/toSaleOrder}">
+                        <a th:href="@{/sale/saleOrder}">
                             <span class="sidebar-nav-item-icon glyphicon glyphicon-list-alt"></span>
                             <span>销售订单</span>
                         </a>
@@ -208,7 +208,7 @@
                 <span class="pd-5 float-right">共有数据：<strong th:text="${count}"></strong>条</span>
             </div>
             <div class="common-body">
-                <table class="table table-bordered table-hover common-table table-striped">
+                <table class="table table-bordered table-hover table-striped">
                     <thead>
                     <tr class="info">
                         <th>供应商编号</th>
@@ -245,7 +245,8 @@
                     <ul class="pagination">
                         <li><a th:href="@{/supplier/toSupplier}">首页</a></li>
                         <li th:class="${currentPage == 1}?'disabled':''">
-                            <a th:href="@{'/supplier/supplierInfo?currentPage=' + ${currentPage - 1}}">&laquo;</a>
+                            <a th:if="${currentPage != 1}" th:href="@{'/supplier/supplierInfo?currentPage=' + ${currentPage - 1}}">&laquo;</a>
+                            <a th:if="${currentPage == 1}">&laquo;</a>
                         </li>
                         <li>
                             <a th:if="${currentPage - 4 >= 1  && currentPage == totalPage}" th:href="@{'/supplier/supplierInfo?currentPage=' + ${currentPage - 4}}">[[${currentPage - 4}]]</a>
@@ -273,7 +274,8 @@
                             <a th:if="${currentPage + 4 <= totalPage  && currentPage == totalPage}" th:href="@{'/supplier/supplierInfo?currentPage=' + ${currentPage + 4}}">[[${currentPage + 4}]]</a>
                         </li>
                         <li th:class="${currentPage == totalPage} ? 'disabled' : ''">
-                            <a th:href="@{'/supplier/supplierInfo?currentPage=' + ${currentPage + 1}}">&raquo;</a>
+                            <a th:if="${currentPage != totalPage}" th:href="@{'/supplier/supplierInfo?currentPage=' + ${currentPage + 1}}">&raquo;</a>
+                            <a th:if="${currentPage == totalPage}">&raquo;</a>
                         </li>
                         <li><a th:href="@{'/supplier/supplierInfo?currentPage=' + ${totalPage}}">尾页</a></li>
                     </ul>

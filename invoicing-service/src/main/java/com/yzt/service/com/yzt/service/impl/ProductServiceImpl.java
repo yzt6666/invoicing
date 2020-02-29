@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -24,7 +25,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product selByID(Integer productID) {
+    public List<Map> selByID(Integer productID) {
         return productMapper.selByID(productID);
     }
+
+//    @Override
+//    public Product selByID(Integer productID) {
+//        return productMapper.selByID(productID);
+//    }
 }

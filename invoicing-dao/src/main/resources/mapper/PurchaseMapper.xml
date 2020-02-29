@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzt.mapper.PurchaseMapper">
+    <select id="selCategory" resultType="category">
+        select * from categories
+    </select>
+
+    <select id="selByCategoryID" resultType="product">
+        select * from products where categoryID = #{0}
+    </select>
+
+    <select id="selSupplier" resultType="supplier">
+        select * from suppliers
+    </select>
+
+    <insert id="insPurchaseOrder">
+        insert into purchase_order values
+         (#{orderID}, #{supplierID}, #{employeeID}, #{orderDate}, #{flag}, #{remark})
+    </insert>
+
+    <insert id="insPurchaseOrderDetail">
+        insert into purchase_order_detail values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+                #{item.orderID},
+                #{item.productID},
+                #{item.purchasePrice},
+                #{item.quantity},
+                #{item.totalPrice}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selPurchaseOrder" resultType="map">
+        select orderID, companyName, username, orderDate, remark
+        from purchase_order p, suppliers s, userlist u
+        where p.supplierID = s.supplierID and p.employeeID = u.employeeID
+        limit #{0}, #{1}
+    </select>
+    <select id="selCount" resultType="int">
+        select count(*) from purchase_order where flag = #{0}
+    </select>
+
+    <select id="selByOrderID" resultType="map">
+        select productName, purchasePrice, quantity, totalPrice
+        from purchase_order_detail detail, products
+        where orderID = #{0} and detail.productID = products.productID
+    </select>
+</mapper>

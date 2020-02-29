@@ -5,17 +5,17 @@ $(function () {
         const tr = td.parent("tr");
         const productID = tr.find("td:eq(1)").html();
         const span = self.children("span");
-        console.log(tr.next());
         if (span.hasClass("fa-angle-right")) {
             span.removeClass("fa-angle-right");
             span.addClass("fa-angle-down");
             $.ajax({
-                type : "get",
+                type : "GET",
                 url : "/product/" + productID,
                 data : JSON.stringify(productID),
                 contentType : "application/json",
                 dataType : "json",
-                success : function(res) {
+                success : function(data) {
+                    const res = data[0];
                     const newTr = $("<tr></tr>");
                     const newTd = $("<td></td>").attr("colspan", "6").attr("style", "text-align:left");
                     const categoryName = $("<div></div>").append($("<label></label>").append("产品类别").addClass("expand-label")).append(

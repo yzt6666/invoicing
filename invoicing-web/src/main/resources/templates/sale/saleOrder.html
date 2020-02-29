@@ -1,10 +1,334 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>小虎进销存管理系统</title>
+    <link rel="shortcut icon" th:href="@{/static/img/tiger.ico}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/static/bootstrap-3.3.7/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/font-awesome-4.7.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/mainPage.css}">
+    <link rel="stylesheet" th:href="@{/static/css/purchase/supplier.css}">
+    <link rel="stylesheet" th:href="@{/static/css/common.css}">
+    <link rel="stylesheet" th:href="@{/static/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css}">
+    <script type="text/javascript" th:src="@{/static/jquery/jquery-3.0.0.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/bootstrap-3.3.7/dist/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/mainPage.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/sale/saleOrder.js}"></script>
+    <script type="text/javascript" th:src="@{/static/bootstrap-datetimepicker/js/moment-with-locales.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js}"></script>
 </head>
 <body>
-    saleOrder!
+<!--顶部-->
+<header class="navbar-wrapper">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/index">小虎进销存管理系统</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a>管理员账号</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle " data-toggle="dropdown">
+                            点我
+                            <span class="caret"></span>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">个人信息</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">切换账号</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">退出登录</a></li>
+                            </ul>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<!--左侧导航栏-->
+<aside class="sidebar navbar-fixed-top">
+    <nav class="sidebar-nav">
+        <ul th:id="menu">
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-shopping-cart"></span>
+                    <span class="sidebar-nav-item">订货管理</span>
+                    <span class="fa fa-angle-left menu-list"></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/supplier/toSupplier}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
+                            <span>供应商管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/purchase/purchaseOrder}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-list-alt"></span>
+                            <span>采购订单</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-piggy-bank"></span>
+                    <span class="sidebar-nav-item">销售管理</span>
+                    <span class="fa fa-angle-left menu-list"></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/customer/toCustomer}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
+                            <span>客户管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/sale/saleOrder}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-list-alt"></span>
+                            <span>销售订单</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-home"></span>
+                    <span class="sidebar-nav-item">库存管理</span>
+                    <span class="fa fa-angle-left menu-list"></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/stock/toStocktaking}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-inbox"></span>
+                            <span>库存盘点</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/stock/toInbound}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-copy"></span>
+                            <span>商品入库</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/stock/toOutbound}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-paste"></span>
+                            <span>商品出库</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-book"></span>
+                    <span class="sidebar-nav-item">产品管理</span>
+                    <span class="fa fa-angle-left menu-list"></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/product/toProductMessage}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-gift"></span>
+                            <span>商品信息</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/product/add}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
+                            <span>新增产品</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-cloud"></span>
+                    <span class="sidebar-nav-item">统计分析</span>
+                    <span class="fa fa-angle-left menu-list"></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/analysis/toSaleAnalysis}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-piggy-bank"></span>
+                            <span>销售分析</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/analysis/toProfitAnalysis}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-yen"></span>
+                            <span>盈亏分析</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-hdd"></span>
+                    <span class="sidebar-nav-item">系统管理</span>
+                    <span class="fa fa-angle-left menu-list"></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/system/toUserManage}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
+                            <span>用户权限管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/system/toBackUp}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-floppy-save"></span>
+                            <span>数据备份</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</aside>
+<div class="main-div">
+    <!--路径栏-->
+    <nav class="navbar navbar-inverse navbar-fixed-top navbar-style" role="navigation">
+        <i class="glyphicon glyphicon-home nav-font"></i>
+        <a th:href="@{/index}">首页</a>
+        <span>></span>
+        <span>销售管理</span>
+        <span>></span>
+        <span>销售订单</span>
+        <a th:href="@{/sale/saleOrder}" class="btn btn-success btn-refresh" title="刷新">
+            <i class="glyphicon glyphicon-repeat refresh-font"></i>
+        </a>
+    </nav>
+    <div class="supplier-container">
+        <article class="common-article">
+            <div class="common-header">
+                <span class="float-left">
+                    <a th:href="@{/sale/saleOrder/create}" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i>填写订单</a>
+                </span>
+                <span class="pd-5 float-right">共有数据：<strong th:text="${count}"></strong>条</span>
+            </div>
+            <div class="row form-inline date-row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>订单状态：</label>
+                        <select id="flag" name="flag" class="form-control">
+                            <option value="" selected hidden></option>
+                            <option value="未完成">未完成</option>
+                            <option value="已完成">已完成</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-sm-offset-1">
+                    <div class="form-group">
+                        <label>开始日期：</label>
+                        <!--指定 date标记-->
+                        <div class="input-group date" id="datetimepicker1">
+                            <input type="text" class="form-control"/>
+                            <span class="input-group-addon">
+                               <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>结束日期：</label>
+                        <!--指定 date标记-->
+                        <div class="input-group date" id="datetimepicker2">
+                            <input type="text" class="form-control"/>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="common-body">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
+                    <tr class="info">
+                        <th></th>
+                        <th>订单编号</th>
+                        <th>客户名称</th>
+                        <th>销售员</th>
+                        <th>下单日期</th>
+                        <th>收货人</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="map:${saleOrders}">
+                        <td>
+                            <a href="" class="expandOrder" onclick="return false;">
+                                <span class="fa fa-angle-right" style="color: black;"></span>
+                            </a>
+                        </td>
+                        <td th:text="${map.orderID}"></td>
+                        <td th:text="${map.companyName}"></td>
+                        <td th:text="${map.username}"></td>
+                        <td th:text="${map.orderDate}"></td>
+                        <td th:text="${map.shipName}"></td>
+                        <td>
+                            <a onclick="addSupplier();" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i>编辑</a>
+                            <a onclick="addSupplier();" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i>删除</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div align="center">
+                    <ul class="pagination">
+                        <li><a th:href="@{/sale/saleOrder}">首页</a></li>
+                        <li th:class="${currentPage == 1}?'disabled':''">
+                            <a th:if="${currentPage != 1}" th:href="@{'/sale/orderInfo?currentPage=' + ${currentPage - 1}}">&laquo;</a>
+                            <a th:if="${currentPage == 1}">&laquo;</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 4 >= 1  && currentPage == totalPage}" th:href="@{'/sale/orderInfo?currentPage=' + ${currentPage - 4}}">[[${currentPage - 4}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 3 >= 1  && currentPage == totalPage}" th:href="@{'/sale/orderInfo?currentPage=' + ${currentPage - 3}}">[[${currentPage - 3}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 2 >= 1}" th:href="@{'/sale/orderInfo?currentPage=' + ${currentPage - 2}}">[[${currentPage - 2}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 1 >= 1}" th:href="@{'/sale/orderInfo?currentPage=' + ${currentPage - 1}}">[[${currentPage - 1}]]</a>
+                        </li>
+                        <li class="active"><a th:href="@{'/sale/orderInfo?currentPage' + ${currentPage}}" th:text="${currentPage}">[[${currentPage}]]</a></li>
+                        <li>
+                            <a th:if="${currentPage + 1 <= totalPage}" th:href="@{'/sale/orderInfo?currentPage=' + ${currentPage + 1}}">[[${currentPage + 1}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage + 2 <= totalPage}" th:href="@{'/sale/orderInfo?currentPage=' + ${currentPage + 2}}">[[${currentPage + 2}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage + 3 <= totalPage  && currentPage == totalPage}" th:href="@{'/sale/orderInfo?currentPage=' + ${currentPage + 3}}">[[${currentPage + 3}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage + 4 <= totalPage  && currentPage == totalPage}" th:href="@{'/sale/orderInfo?currentPage=' + ${currentPage + 4}}">[[${currentPage + 4}]]</a>
+                        </li>
+                        <li th:class="${currentPage == totalPage} ? 'disabled' : ''">
+                            <a th:if="${currentPage != totalPage}" th:href="@{'/sale/orderInfo?currentPage=' + ${currentPage + 1}}">&raquo;</a>
+                            <a th:if="${currentPage == totalPage}">&raquo;</a>
+                        </li>
+                        <li><a th:href="@{'/sale/orderInfo?currentPage=' + ${totalPage}}">尾页</a></li>
+                    </ul>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+<script>
+    $(function () {
+        $("#datetimepicker1").datetimepicker({
+            format: "YYYY-MM-DD",
+            locale: moment.locale("zh-cn")
+        });
+        $("#datetimepicker2").datetimepicker({
+            format: "YYYY-MM-DD",
+            locale: moment.locale("zh-cn")
+        });
+    });
+
+</script>
 </body>
 </html>

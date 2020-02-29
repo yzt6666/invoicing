@@ -1,0 +1,25 @@
+.order-container {
+    position: absolute;
+    /*overflow: auto;*/
+    margin-top: 30px;
+    width: 85%;
+    /*height: 500px;*/
+}
+
+.pd-row {
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.order-body {
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+pd-20 {
+    padding: 20px;
+}
+
+.order-label {
+    width: 100px;
+}

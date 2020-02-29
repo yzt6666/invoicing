@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/product")
@@ -61,9 +62,10 @@ public class ProductController {
 
     @RequestMapping(value = "{productID}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<Product> findProduct(@PathVariable("productID") Integer productID) {
-        Product product = productService.selByID(productID);
-        return ResponseEntity.ok(product);
+    public ResponseEntity<List<Map>> findProduct(@PathVariable("productID") Integer productID) {
+//        Product product = productService.selByID(productID);
+        List<Map> map = productService.selByID(productID);
+        return ResponseEntity.ok(map);
     }
 
 
