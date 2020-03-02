@@ -23,7 +23,7 @@ public class CustomerController {
 
     private int count;
     private int totalPage;
-    private int pageSize = 10;
+    private int pageSize = 20;
 
     @RequestMapping("toCustomer")
     public String toCustomer(Model model) {

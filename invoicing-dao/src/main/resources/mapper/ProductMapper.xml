@@ -17,8 +17,9 @@
         select count(*) from products
     </select>
 
-    <select id="selByID" resultType="java.util.Map">
-        select * from categories c, products p where p.productID = #{0} and c.categoryID = p.categoryID
+    <select id="selByID" resultType="map">
+        select * from categories c, products p, stock s
+        where p.productID = #{0} and c.categoryID = p.categoryID and s.productID = p.productID
     </select>
 
 </mapper>

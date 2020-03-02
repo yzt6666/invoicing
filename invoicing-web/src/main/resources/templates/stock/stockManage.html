@@ -12,7 +12,7 @@
     <script type="text/javascript" th:src="@{/static/jquery/jquery-3.0.0.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/bootstrap-3.3.7/dist/js/bootstrap.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/mainPage.js}"></script>
-    <script type="text/javascript" th:src="@{/static/js/purchase/supplier.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/stock/stockManage.js}"></script>
 </head>
 <body>
 <!--顶部-->
@@ -183,158 +183,83 @@
         <i class="glyphicon glyphicon-home nav-font"></i>
         <a th:href="@{/index}">首页</a>
         <span>></span>
-        <span>销售管理</span>
+        <span>库存管理</span>
         <span>></span>
-        <span>客户管理</span>
-        <a th:href="@{/customer/toCustomer}" class="btn btn-success btn-refresh" title="刷新"><i class="glyphicon glyphicon-repeat refresh-font"></i></a>
+        <span>出入库管理</span>
+        <a th:href="@{/stock/stockManage}" class="btn btn-success btn-refresh" title="刷新"><i class="glyphicon glyphicon-repeat refresh-font"></i></a>
     </nav>
     <div class="supplier-container">
         <article class="common-article">
-            <div class="common-header">
-                <span class="float-left">
-                    <a onclick="supplierModal();" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>新增客户</a>
-                </span>
-                <span class="float-center">
-                    客户名称：
-                    <input type="text" id="search" name="search" size="10"/>
-                    <a class="btn btn-success">查询<i class="glyphicon glyphicon-search"></i></a>
-                </span>
-                <span class="pd-5 float-right">共有数据：<strong th:text="${count}"></strong>条</span>
+            <div class="row form-inline" style="margin-top: 10px;">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>订单状态：</label>
+                        <select id="orderStatus" class="form-control">
+                            <option>待入库</option>
+                            <option>待出库</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="common-body">
-                <table class="table table-bordered table-hover common-table table-striped">
+                <table id="stockItem" class="table table-bordered table-hover table-striped">
                     <thead>
                     <tr class="info">
-                        <th>客户编号</th>
-                        <th>客户名称</th>
-                        <th>联系人</th>
-                        <th>联系人职位</th>
-                        <th>地址</th>
-                        <th>城市</th>
-                        <th>电话</th>
-                        <th>传真</th>
-                        <th>邮政编码</th>
+                        <th></th>
+                        <th>订单编号</th>
+                        <th>订单日期</th>
                         <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="customers:${customers}">
-                        <td th:text="${customers.customerID}"></td>
-                        <td th:text="${customers.companyName}"></td>
-                        <td th:text="${customers.contactName}"></td>
-                        <td th:text="${customers.contactTitle}"></td>
-                        <td th:text="${customers.address}"></td>
-                        <td th:text="${customers.city}"></td>
-                        <td th:text="${customers.phone}"></td>
-                        <td th:text="${customers.fax}"></td>
-                        <td th:text="${customers.postalCode}"></td>
+                    <tr th:each="order:${order}">
                         <td>
-                            <a onclick="addSupplier();" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i>编辑</a>
-                            <a onclick="addSupplier();" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i>删除</a>
+                            <a href="" onclick="expandOrder(this);return false;">
+                                <span class="fa fa-angle-right" style="color: black;"></span>
+                            </a>
+                        </td>
+                        <td th:text="${order.orderID}"></td>
+                        <td th:text="${order.orderDate}"></td>
+                        <td>
+                            <a onclick="inbound(this)" class="btn btn-info">
+                                <i class="glyphicon glyphicon-copy"></i>
+                                入库
+                            </a>
                         </td>
                     </tr>
                     </tbody>
                 </table>
-                <div align="center">
-                    <ul class="pagination">
-                        <li><a th:href="@{/customer/toCustomer}">首页</a></li>
-                        <li th:class="${currentPage == 1}?'disabled':''">
-                            <a th:if="${currentPage != 1}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage - 1}}">&laquo;</a>
-                            <a th:if="${currentPage == 1}">&laquo;</a>
-                        </li>
-                        <li>
-                            <a th:if="${currentPage - 4 >= 1  && currentPage == totalPage}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage - 4}}">[[${currentPage - 4}]]</a>
-                        </li>
-                        <li>
-                            <a th:if="${currentPage - 3 >= 1  && currentPage == totalPage}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage - 3}}">[[${currentPage - 3}]]</a>
-                        </li>
-                        <li>
-                            <a th:if="${currentPage - 2 >= 1}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage - 2}}">[[${currentPage - 2}]]</a>
-                        </li>
-                        <li>
-                            <a th:if="${currentPage - 1 >= 1}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage - 1}}">[[${currentPage - 1}]]</a>
-                        </li>
-                        <li class="active"><a th:href="@{'/customer/customerInfo?currentPage' + ${currentPage}}" th:text="${currentPage}">[[${currentPage}]]</a></li>
-                        <li>
-                            <a th:if="${currentPage + 1 <= totalPage}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage + 1}}">[[${currentPage + 1}]]</a>
-                        </li>
-                        <li>
-                            <a th:if="${currentPage + 2 <= totalPage}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage + 2}}">[[${currentPage + 2}]]</a>
-                        </li>
-                        <li>
-                            <a th:if="${currentPage + 3 <= totalPage  && currentPage == totalPage}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage + 3}}">[[${currentPage + 3}]]</a>
-                        </li>
-                        <li>
-                            <a th:if="${currentPage + 4 <= totalPage  && currentPage == totalPage}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage + 4}}">[[${currentPage + 4}]]</a>
-                        </li>
-                        <li th:class="${currentPage == totalPage} ? 'disabled' : ''">
-                            <a th:if="${currentPage != totalPage}" th:href="@{'/customer/customerInfo?currentPage=' + ${currentPage + 1}}">&raquo;</a>
-                            <a th:if="${currentPage == totalPage}">&raquo;</a>
-                        </li>
-                        <li><a th:href="@{'/customer/customerInfo?currentPage=' + ${totalPage}}">尾页</a></li>
-                    </ul>
-                </div>
             </div>
         </article>
     </div>
 </div>
-
-<!--模态框 新增供应商-->
-<div class="modal fade" id="newSupplier" aria-label="supplierModal" aria-hidden="true">
-    <div class="modal-dialog">
+<!--模态框 移库-->
+<div class="modal fade" id="moveStock" aria-label="supplierModal" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">新增客户</h4>
+                <h4 class="modal-title">移库</h4>
             </div>
             <div class="modal-body">
-                <form class="form-group">
-                    <div class="form-group">
-                        <span style="color: red">*</span>
-                        <label for="companyName">公司名称</label>
-                        <input type="text" id="companyName" name="companyName" class="form-control"/>
+                <div class="row form-inline">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="form-group">
+                            <label>库存区域：</label>
+                            <select class="form-control" id="stockArea" name="stockArea" style="width: 100px">
+                                <option th:each="area:${stockArea}" th:value="${area.stockArea}" th:text="${area.stockArea}"></option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <span style="color: red">*</span>
-                        <label for="contactName">联系人</label>
-                        <input type="text" id="contactName" name="contactName" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="contactTitle">联系人职位</label>
-                        <input type="text" id="contactTitle" name="contactTitle" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <span style="color: red">*</span>
-                        <label for="address">地址</label>
-                        <input type="text" id="address" name="address" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <span style="color: red">*</span>
-                        <label for="city">城市</label>
-                        <input type="text" id="city" name="city" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <span style="color: red">*</span>
-                        <label for="phone">电话</label>
-                        <input type="text" id="phone" name="phone" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="fax">传真</label>
-                        <input type="text" id="fax" name="fax" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="postalCode">邮政编码</label>
-                        <input type="text" id="postalCode" name="postalCode" class="form-control"/>
-                    </div>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">
                     关闭
                 </button>
-                <button type="button" class="btn btn-primary" onclick="addSupplier()">
+                <button type="button" class="btn btn-primary" id="save">
                     保存
                 </button>
             </div>

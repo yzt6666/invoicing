@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzt.mapper.StockMapper">
+    <select id="selStock" resultType="map">
+        select * from stock s, products p where p.productID = s.productID limit #{0}, #{1}
+    </select>
+    <select id="selCount" resultType="int">
+        select count(*) from stock
+    </select>
+    <select id="selStockArea" resultType="stock">
+        select distinct stockArea from stock
+    </select>
+
+    <update id="updStockArea">
+        update stock set stockArea = #{stockArea} where stockID = #{stockID}
+    </update>
+
+    <select id="selByName" resultType="map">
+        select * from stock s, products p
+        where productName like "%"#{0}"%" and p.productID = s.productID limit #{1}, #{2}
+    </select>
+
+    <select id="selInboundOrder" resultType="map">
+        select * from purchase_order where flag = #{0} for update
+    </select>
+
+    <select id="selOutboundOrder" resultType="map">
+        select * from sale_order where flag = #{0}
+    </select>
+
+    <update id="updInbound">
+        update purchase_order set flag = #{0} where orderID = #{1}
+    </update>
+
+    <update id="updOutbound">
+        update sale_order set flag = #{0} where orderID = #{1}
+    </update>
+
+    <select id="selInboundByID" resultType="map">
+        select distinct stock.productID, productName, quantity, unitsInStock
+        from stock, purchase_order_detail detail, products
+        where orderID = #{0}
+        and stock.productID = products.productID and products.productID = detail.productID
+
+    </select>
+
+    <select id="selOutboundByID" resultType="map">
+        select distinct stock.productID, productName, quantity, stock.unitsInStock
+        from stock, sale_order_detail detail, products
+        where orderID = #{0}
+        and stock.productID = products.productID and products.productID = detail.productID
+    </select>
+
+    <update id="updStockUnit">
+        update stock set unitsInStock = unitsInStock +
+        <foreach collection="list" item="item" index="index" separator=" " open="case productID" close="end">
+            when #{item.productID} then #{item.quantity}
+        </foreach>
+        where productID in (
+        <foreach collection="list" item="item" index="index" separator=",">
+            #{item.productID}
+        </foreach>
+        )
+    </update>
+
+    <update id="updOutboundUnit">
+        update stock set unitsInStock = unitsInStock -
+        <foreach collection="list" item="item" index="index" separator=" " open="case productID" close="end">
+            when #{item.productID} then #{item.quantity}
+        </foreach>
+        where productID in (
+        <foreach collection="list" item="item" index="index" separator=",">
+            #{item.productID}
+        </foreach>
+        )
+    </update>
+
+    <update id="updUnitsOnOrder">
+        update products set unitsOnOrder = unitsOnOrder +
+        <foreach collection="list" item="item" index="index" separator=" " open="case productID" close="end">
+            when #{item.productID} then #{item.quantity}
+        </foreach>
+        where productID in (
+        <foreach collection="list" item="item" index="index" separator=",">
+            #{item.productID}
+        </foreach>
+        )
+    </update>
+</mapper>
