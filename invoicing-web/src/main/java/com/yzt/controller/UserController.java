@@ -19,16 +19,6 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @RequestMapping("/first")
-    public String first() {
-        return "/first";
-    }
-
-    @RequestMapping("/second")
-    public String second() {
-        return "/second";
-    }
-
     @RequestMapping({"/index","/"})
     public String toIndex() {
         return "/mainPage";

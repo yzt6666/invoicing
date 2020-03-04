@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzt.mapper.AnalysisMapper">
+    <select id="selUnitsOnOrder" resultType="map">
+        select categoryName, sum(quantity) as quantity, sum(totalPrice) sale
+        from categories c, sale_order_detail s, products p, sale_order sale
+        where c.categoryID = p.categoryID and s.productID = p.productID
+        and sale.orderID = s.orderID
+        and year(orderDate) = #{0} and month(orderDate) = #{1}
+        group by c.categoryID;
+    </select>
+
+    <select id="selCategorySale" resultType="map">
+        select productName, sum(quantity) as quantity, sum(totalPrice) sale
+        from categories c, sale_order_detail s, products p, sale_order sale
+        where c.categoryID = p.categoryID and s.productID = p.productID
+        and sale.orderID = s.orderID and YEAR(orderDate) = #{0} and month(orderDate) = #{1}
+        and p.categoryID = #{2}
+        group by p.productID
+    </select>
+
+    <select id="selYear" resultType="map">
+        select distinct year(orderDate) as year from sale_order order by year(orderDate) desc
+    </select>
+
+    <select id="selProductRank" resultType="map">
+        select productName, categoryName, sum(quantity) as quantity
+        from categories c, sale_order_detail s, products p, sale_order sale
+        where c.categoryID = p.categoryID and s.productID = p.productID
+        and sale.orderID = s.orderID and YEAR(orderDate) = #{0} and month(orderDate) = #{1}
+        group by p.productID
+        order by quantity desc
+    </select>
+
+    <select id="selPay" resultType="map">
+        select month(orderDate) as month, sum(totalPrice) as pay
+        from purchase_order p, purchase_order_detail detail
+        where p.orderID = detail.orderID and year(orderDate) = #{0}
+        group by month;
+    </select>
+
+    <select id="selProfit" resultType="map">
+        select month(orderDate) as month, sum(totalPrice) as profit
+        from sale_order s, sale_order_detail detail
+        where s.orderID = detail.orderID and year(orderDate) = #{0}
+        group by month;
+    </select>
+</mapper>
