@@ -27,15 +27,20 @@ public class ShiroConfig {
             perms：拥有对某个资源的权限才能访问
             role：拥有某个角色权限才能访问
          */
-//        Map<String, String> filterMap = new LinkedHashMap<>();
+        Map<String, String> filterMap = new LinkedHashMap<>();
         //授权
 //        filterMap.put("/user/add", "perms[user:add]");
 //        filterMap.put("/purchase/*", "perms[user:update]");
 
-//        filterMap.put("/*", "authc");
-//        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
+        filterMap.put("/index", "authc");
+        filterMap.put("/login", "anon");
+        filterMap.put("/toLogin", "anon");
+        filterMap.put("/static/**", "anon");
+        filterMap.put("/**", "user");
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
         //设置登录的请求
         shiroFilterFactoryBean.setLoginUrl("/toLogin");
+        shiroFilterFactoryBean.setSuccessUrl("/index");
         return shiroFilterFactoryBean;
     }
 

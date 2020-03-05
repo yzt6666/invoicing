@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yzt.mapper.UserMapper">
-    <select id="selUser" resultType="com.yzt.entity.LoginUser">
-        select * from user where username = #{0}
+    <select id="selUser" resultType="userList">
+        select * from user_list where username = #{0}
     </select>
 </mapper>

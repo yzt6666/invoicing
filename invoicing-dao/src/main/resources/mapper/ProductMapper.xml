@@ -2,13 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yzt.mapper.ProductMapper">
-<!--    <resultMap id="productResultMap" type="product">-->
-<!--        <id column="productID" jdbcType="int" property="productID"></id>-->
-<!--        <result column="productName" jdbcType="varchar" property="productName"></result>-->
-<!--        <result column="supplierID" jdbcType="int" property="supplierID"></result>-->
-<!--        <result column="categoryID" jdbcType="int" property="categoryID"></result>-->
-<!--        <result column="quantityPerUnit" jdbcType="varchar" property=""></result>-->
-<!--    </resultMap>-->
     <select id="allProduct" resultType="product">
         select * from products limit #{0}, #{1}
     </select>

@@ -1,7 +1,7 @@
 package com.yzt.service;
 
-import com.yzt.entity.LoginUser;
+import com.yzt.entity.UserList;
 
 public interface UserService {
-    public LoginUser selUser(String username);
+    public UserList selUser(String username);
 }

@@ -1,6 +1,6 @@
 package com.yzt.config;
 
-import com.yzt.entity.LoginUser;
+import com.yzt.entity.UserList;
 import com.yzt.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -21,7 +21,7 @@ public class UserRealm extends AuthorizingRealm {
         System.out.println("执行了授权");
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         Subject subject = SecurityUtils.getSubject();
-        LoginUser user = (LoginUser)subject.getPrincipal();
+        UserList user = (UserList)subject.getPrincipal();
         info.addStringPermission(user.getPerms());
         return info;
     }
@@ -32,7 +32,7 @@ public class UserRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         System.out.println("执行了认证");
         UsernamePasswordToken userToken = (UsernamePasswordToken) token;
-        LoginUser user = userService.selUser(userToken.getUsername());
+        UserList user = userService.selUser(userToken.getUsername());
         if (user == null) {
             return null;
         }

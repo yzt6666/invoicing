@@ -34,7 +34,7 @@
 
     <select id="selPurchaseOrder" resultType="map">
         select orderID, companyName, username, orderDate, remark
-        from purchase_order p, suppliers s, userlist u
+        from purchase_order p, suppliers s, user_list u
         where p.supplierID = s.supplierID and p.employeeID = u.employeeID
         limit #{0}, #{1}
     </select>

@@ -4,7 +4,7 @@
 <mapper namespace="com.yzt.mapper.SaleMapper">
     <select id="selSaleOrder" resultType="map">
         select orderID, companyName, username, orderDate, shipName
-        from sale_order s, customers c, userlist u
+        from sale_order s, customers c, user_list u
         where s.customerID = c.customerID and s.employeeID = u.employeeID
         limit #{0}, #{1}
     </select>
