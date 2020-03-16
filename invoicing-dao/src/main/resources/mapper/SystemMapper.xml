@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzt.mapper.SystemMapper">
+    <select id="selAllUser" resultType="userList">
+        select * from user_list limit #{0}, #{1}
+    </select>
+
+    <select id="selByEmployeeID" resultType="userList">
+        select perms from user_list where employeeID = #{0}
+    </select>
+
+    <update id="updPerms">
+        update user_list set perms = #{0} where employeeID = #{1}
+    </update>
+
+    <delete id="delUser">
+        delete from user_list where employeeID = #{0}
+    </delete>
+</mapper>

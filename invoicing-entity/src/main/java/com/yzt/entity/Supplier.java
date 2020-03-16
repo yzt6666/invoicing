@@ -82,4 +82,19 @@ public class Supplier {
     public void setFax(String fax) {
         this.fax = fax;
     }
+
+    @Override
+    public String toString() {
+        return "Supplier{" +
+                "supplierID='" + supplierID + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", contactName='" + contactName + '\'' +
+                ", contactTitle='" + contactTitle + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                ", phone='" + phone + '\'' +
+                ", fax='" + fax + '\'' +
+                '}';
+    }
 }

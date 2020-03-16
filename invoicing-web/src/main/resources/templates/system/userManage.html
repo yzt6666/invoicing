@@ -1,10 +1,338 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.thymeleaf.org/thymeleaf-extras-shiro">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>小虎进销存管理系统</title>
+    <link rel="shortcut icon" th:href="@{/static/img/tiger.ico}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/static/bootstrap-3.3.7/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/font-awesome-4.7.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/mainPage.css}">
+    <link rel="stylesheet" th:href="@{/static/css/purchase/supplier.css}">
+    <link rel="stylesheet" th:href="@{/static/css/common.css}">
+    <script type="text/javascript" th:src="@{/static/jquery/jquery-3.0.0.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/bootstrap-3.3.7/dist/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/mainPage.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/system/userManage.js}"></script>
 </head>
 <body>
-    用户权限管理！
+<!--顶部-->
+<header class="navbar-wrapper">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/index">小虎进销存管理系统</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a>
+                            <span shiro:principal property="role"></span>
+                            <span shiro:principal property="username"></span>
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle " data-toggle="dropdown">
+                            点我
+                            <span class="caret"></span>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">个人信息</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">切换账号</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">退出登录</a></li>
+                            </ul>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<!--左侧导航栏-->
+<aside class="sidebar navbar-fixed-top">
+    <nav class="sidebar-nav">
+        <ul th:id="menu">
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-shopping-cart"></span>
+                    <span class="sidebar-nav-item">订货管理</span>
+                    <span class="fa fa-angle-left menu-list" ></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/supplier/toSupplier}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
+                            <span>供应商管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/purchase/purchaseOrder}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-list-alt"></span>
+                            <span>采购订单</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-piggy-bank"></span>
+                    <span class="sidebar-nav-item">销售管理</span>
+                    <span class="fa fa-angle-left menu-list" ></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/customer/toCustomer}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
+                            <span>客户管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/sale/saleOrder}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-list-alt"></span>
+                            <span>销售订单</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-home"></span>
+                    <span class="sidebar-nav-item">库存管理</span>
+                    <span class="fa fa-angle-left menu-list" ></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/stock/toStocktaking}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-inbox"></span>
+                            <span>库存盘点</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/stock/stockManage}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-copy"></span>
+                            <span>出入库管理</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-book"></span>
+                    <span class="sidebar-nav-item">产品管理</span>
+                    <span class="fa fa-angle-left menu-list" ></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/product/toProductMessage}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-gift"></span>
+                            <span>产品信息</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/product/add}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
+                            <span>新增产品</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-cloud"></span>
+                    <span class="sidebar-nav-item">统计分析</span>
+                    <span class="fa fa-angle-left menu-list" ></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/analysis/toSaleAnalysis}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-piggy-bank"></span>
+                            <span>销售分析</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/analysis/toProfitAnalysis}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-yen"></span>
+                            <span>盈亏分析</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="" class="menu-main" onclick="return false;">
+                    <span class="sidebar-nav-item-icon glyphicon glyphicon-hdd"></span>
+                    <span class="sidebar-nav-item">系统管理</span>
+                    <span class="fa fa-angle-left menu-list" ></span>
+                </a>
+                <ul class="collapse">
+                    <li>
+                        <a th:href="@{/system/toUserManage}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
+                            <span>用户权限管理</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/system/toBackUp}">
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-floppy-save"></span>
+                            <span>数据备份</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</aside>
+
+<div class="main-div">
+    <!--路径栏-->
+    <nav class="navbar navbar-inverse navbar-fixed-top navbar-style" role="navigation">
+        <i class="glyphicon glyphicon-home nav-font"></i>
+        <a th:href="@{/index}">首页</a>
+        <span>></span>
+        <span>系统管理</span>
+        <span>></span>
+        <span>用户权限管理</span>
+        <a th:href="@{/system/toUserManage}" class="btn btn-success btn-refresh" title="刷新"><i class="glyphicon glyphicon-repeat refresh-font"></i></a>
+    </nav>
+    <div class="supplier-container">
+        <article class="common-article">
+            <div class="common-body">
+                <table class="table table-bordered table-hover common-table table-striped">
+                    <thead>
+                    <tr class="info">
+                        <th>用户编号</th>
+                        <th>用户名</th>
+                        <th>角色</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="userlist:${userlist}">
+                        <td th:text="${userlist.employeeID}"></td>
+                        <td th:text="${userlist.username}"></td>
+                        <td th:text="${userlist.role}"></td>
+                        <td>
+                            <a onclick="changePermission(this);" class="btn btn-info"><i class="glyphicon glyphicon-pencil"></i>设置权限</a>
+                            <a onclick="deleteUser(this);" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i>删除</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div align="center">
+                    <ul class="pagination">
+                        <li><a th:href="@{/system/userManage}">首页</a></li>
+                        <li th:class="${currentPage == 1}?'disabled':''">
+                            <a th:if="${currentPage != 1}" th:href="@{'/system/userInfo?currentPage=' + ${currentPage - 1}}">&laquo;</a>
+                            <a th:if="${currentPage == 1}">&laquo;</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 4 >= 1  && currentPage == totalPage}" th:href="@{'/system/userInfo?currentPage=' + ${currentPage - 4}}">[[${currentPage - 4}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 3 >= 1  && currentPage == totalPage}" th:href="@{'/system/userInfo?currentPage=' + ${currentPage - 3}}">[[${currentPage - 3}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 2 >= 1}" th:href="@{'/system/userInfo?currentPage=' + ${currentPage - 2}}">[[${currentPage - 2}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 1 >= 1}" th:href="@{'/system/userInfo?currentPage=' + ${currentPage - 1}}">[[${currentPage - 1}]]</a>
+                        </li>
+                        <li class="active"><a th:href="@{'/system/userInfo?currentPage' + ${currentPage}}" th:text="${currentPage}">[[${currentPage}]]</a></li>
+                        <li>
+                            <a th:if="${currentPage + 1 <= totalPage}" th:href="@{'/system/userInfo?currentPage=' + ${currentPage + 1}}">[[${currentPage + 1}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage + 2 <= totalPage}" th:href="@{'/system/userInfo?currentPage=' + ${currentPage + 2}}">[[${currentPage + 2}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage + 3 <= totalPage  && currentPage == totalPage}" th:href="@{'/system/userInfo?currentPage=' + ${currentPage + 3}}">[[${currentPage + 3}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage + 4 <= totalPage  && currentPage == totalPage}" th:href="@{'/system/userInfo?currentPage=' + ${currentPage + 4}}">[[${currentPage + 4}]]</a>
+                        </li>
+                        <li th:class="${currentPage == totalPage} ? 'disabled' : ''">
+                            <a th:if="${currentPage != totalPage}" th:href="@{'/system/userInfo?currentPage=' + ${currentPage + 1}}">&raquo;</a>
+                            <a th:if="${currentPage == totalPage}">&raquo;</a>
+                        </li>
+                        <li><a th:href="@{'/system/userInfo?currentPage=' + ${totalPage}}">尾页</a></li>
+                    </ul>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+
+<!--模态框 权限设置-->
+<div class="modal fade" id="permission" aria-label="supplierModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">新增客户</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row form-inline">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>
+                                供应商管理：
+                                <input type="checkbox" name="perms" value="purchase:supplier"/>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label>
+                                采购订单：
+                                <input type="checkbox" name="perms" value="purchase:order"/>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label>
+                                客户管理：
+                                <input type="checkbox" name="perms" value="sale:customer"/>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label>
+                                销售订单：
+                                <input type="checkbox" name="perms" value="sale:order"/>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label>
+                                库存盘点：
+                                <input type="checkbox" name="perms" value="stock:stocktaking"/>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label>
+                                出入库管理：
+                                <input type="checkbox" name="perms" value="stock:stockManage"/>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label>
+                                产品信息：
+                                <input type="checkbox" name="perms" value="product:message"/>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label>
+                                新增产品：
+                                <input type="checkbox" name="perms" value="product:add"/>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label>
+                                销售分析：
+                                <input type="checkbox" name="perms" value="analysis:sale"/>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label>
+                                盈亏分析：
+                                <input type="checkbox" name="perms" value="analysis:profit"/>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label>
+                                系统管理：
+                            <input type="checkbox" name="perms" value="system:manager"/>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="changeSubmit()">
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

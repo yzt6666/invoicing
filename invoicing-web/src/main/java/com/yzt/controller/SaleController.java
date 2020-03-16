@@ -4,6 +4,7 @@ import com.yzt.entity.*;
 import com.yzt.mapper.SaleMapper;
 import com.yzt.service.PurchaseService;
 import com.yzt.service.SaleService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -115,4 +116,5 @@ public class SaleController {
         List<Map> maps = saleService.selSaleOrderDetail(orderID);
         return ResponseEntity.ok(maps);
     }
+
 }

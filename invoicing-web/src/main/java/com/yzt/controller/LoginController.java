@@ -19,7 +19,7 @@ public class LoginController {
     @Resource
     private UserService userService;
 
-    @RequestMapping({"/index"})
+    @RequestMapping({"/index","/"})
     public String toIndex() {
         System.out.println("index");
         return "/mainPage";
@@ -39,8 +39,6 @@ public class LoginController {
         try {
             subject.login(token);//执行登录的方法，如果没有异常就说明成功
             UserList user = (UserList) subject.getPrincipal();
-            System.out.println(user);
-//            session.setAttribute("user", user);
             return "/mainPage";
         }catch (UnknownAccountException e){ //用户名不存在
             model.addAttribute("msg", "用户名不存在");

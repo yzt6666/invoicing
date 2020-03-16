@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Configuration
+//@Configuration
 public class ShiroConfig {
     //ShiroFilterFactoryBean
     @Bean
@@ -18,7 +18,6 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         //设置安全管理器
         shiroFilterFactoryBean.setSecurityManager(securityManager);
-
         //添加shiro的内置过滤器
         /*
             anon：无需认证可以访问

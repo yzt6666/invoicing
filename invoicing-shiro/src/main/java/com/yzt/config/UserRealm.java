@@ -22,7 +22,11 @@ public class UserRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         Subject subject = SecurityUtils.getSubject();
         UserList user = (UserList)subject.getPrincipal();
-        info.addStringPermission(user.getPerms());
+        String perms = user.getPerms();
+        String[] permArray = perms.split(",");
+        for (String perm : permArray) {
+            info.addStringPermission(perm);
+        }
         return info;
     }
 

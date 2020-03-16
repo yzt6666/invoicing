@@ -9,4 +9,25 @@
     <select id="selCount" resultType="int">
         select count(*) from suppliers
     </select>
+
+    <select id="selByCompanyName" resultType="supplier">
+        select * from suppliers where companyName like "%"#{0}"%"
+    </select>
+
+    <select id="selBySupplierID" resultType="supplier">
+        select * from suppliers where supplierID = #{0}
+    </select>
+
+    <update id="updSupplier">
+        update suppliers set
+        companyName = #{companyName},
+        contactName = #{contactName},
+        contactTitle = #{contactTitle},
+        address = #{address},
+        city = #{city},
+        postalCode = #{postalCode},
+        phone = #{phone},
+        fax = #{fax}
+        where supplierID = #{supplierID}
+    </update>
 </mapper>
