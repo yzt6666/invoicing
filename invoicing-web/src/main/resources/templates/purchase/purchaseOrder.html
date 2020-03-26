@@ -131,12 +131,6 @@
                             <span>产品信息</span>
                         </a>
                     </li>
-                    <li>
-                        <a th:href="@{/product/add}">
-                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
-                            <span>新增产品</span>
-                        </a>
-                    </li>
                 </ul>
             </li>
             <li>
@@ -203,13 +197,13 @@
                 <span class="float-left">
                     <a th:href="@{/purchase/purchaseOrder/create}" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i>填写订单</a>
                 </span>
-                <span class="pd-5 float-right">共有数据：<strong th:text="${count}"></strong>条</span>
+                <span class="pd-5 float-right">共有数据：<strong id="count" th:text="${count}"></strong>条</span>
             </div>
             <div class="row form-inline date-row">
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label>订单状态：</label>
-                        <select id="flag" name="flag" class="form-control">
+                        <select id="flag" name="flag" class="form-control" onchange="orderStatus()">
                             <option value="" selected hidden></option>
                             <option value="未完成">未完成</option>
                             <option value="已完成">已完成</option>
@@ -220,8 +214,8 @@
                     <div class="form-group">
                         <label>开始日期：</label>
                         <!--指定 date标记-->
-                        <div class="input-group date" id="datetimepicker1">
-                            <input type="text" class="form-control"/>
+                        <div class="input-group date" id="startDateDiv">
+                            <input id="startDate" type="text" class="form-control"/>
                             <span class="input-group-addon">
                                <span class="glyphicon glyphicon-calendar"></span>
                             </span>
@@ -232,17 +226,20 @@
                     <div class="form-group">
                         <label>结束日期：</label>
                         <!--指定 date标记-->
-                        <div class="input-group date" id="datetimepicker2">
-                            <input type="text" class="form-control"/>
+                        <div class="input-group date" id="endDateDiv">
+                            <input id="endDate" type="text" class="form-control"/>
                             <span class="input-group-addon">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-2">
+                    <a onclick="dateStatus()" class="btn btn-success">查询<i class="glyphicon glyphicon-search"></i></a>
+                </div>
             </div>
             <div class="common-body">
-                <table class="table table-bordered table-hover table-striped">
+                <table id="purchaseItem" class="table table-bordered table-hover table-striped">
                     <thead>
                     <tr class="info">
                         <th></th>
@@ -257,7 +254,7 @@
                     <tbody>
                     <tr th:each="map:${purchaseOrders}">
                         <td>
-                            <a href="" class="expandOrder" onclick="return false;">
+                            <a href="" onclick="expandOrder(this);return false;">
                                 <span class="fa fa-angle-right" style="color: black;"></span>
                             </a>
                         </td>
@@ -267,13 +264,13 @@
                         <td th:text="${map.orderDate}"></td>
                         <td th:text="${map.remark}"></td>
                         <td>
-                            <a onclick="addSupplier();" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i>编辑</a>
-                            <a onclick="addSupplier();" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i>删除</a>
+                            <a th:if="${map.flag == '已完成'}" onclick="returnOrder(this);" class="btn btn-warning"><i class="glyphicon glyphicon-file"></i>退单</a>
+                            <a onclick="deleteOrder(this);" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i>删除</a>
                         </td>
                     </tr>
                     </tbody>
                 </table>
-                <div align="center">
+                <div id="page" align="center">
                     <ul class="pagination">
                         <li><a th:href="@{/purchase/purchaseOrder}">首页</a></li>
                         <li th:class="${currentPage == 1}?'disabled':''">
@@ -318,11 +315,11 @@
 </div>
 <script>
     $(function () {
-        $("#datetimepicker1").datetimepicker({
+        $("#startDateDiv").datetimepicker({
             format: "YYYY-MM-DD",
             locale: moment.locale("zh-cn")
         });
-        $("#datetimepicker2").datetimepicker({
+        $("#endDateDiv").datetimepicker({
             format: "YYYY-MM-DD",
             locale: moment.locale("zh-cn")
         });

@@ -14,6 +14,21 @@
         select * from suppliers where companyName like "%"#{0}"%"
     </select>
 
+    <insert id="insSupplier">
+        insert into suppliers
+        values(
+            default,
+            #{companyName},
+            #{contactName},
+            #{contactTitle},
+            #{address},
+            #{city},
+            #{postalCode},
+            #{phone},
+            #{fax}
+        )
+    </insert>
+
     <select id="selBySupplierID" resultType="supplier">
         select * from suppliers where supplierID = #{0}
     </select>
@@ -30,4 +45,8 @@
         fax = #{fax}
         where supplierID = #{supplierID}
     </update>
+
+    <delete id="delSupplier">
+        delete from suppliers where supplierID = #{0}
+    </delete>
 </mapper>

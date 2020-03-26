@@ -2,6 +2,8 @@ package com.yzt.controller;
 
 import com.yzt.entity.*;
 import com.yzt.service.PurchaseService;
+import com.yzt.util.CommonUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,13 +31,9 @@ public class PurchaseController {
     @RequestMapping(value = "purchaseOrder", method = RequestMethod.GET)
     public String toPurchaseOrder(Model model) {
         List<Map> purchaseOrders = purchaseService.selPurchaseOrder(0, pageSize);
-        count = purchaseService.selCount("未到货");
+        count = purchaseService.selCount();
         totalPage = count % pageSize == 0 ? count / pageSize : count / pageSize +1;
-        //解决时间精确到毫秒的情况
-        for (int i = 0; i < purchaseOrders.size(); i++) {
-            Map map = purchaseOrders.get(i);
-            map.put("orderDate", String.valueOf(map.get("orderDate")).replace(".0", ""));
-        }
+        CommonUtil.dateConvert(purchaseOrders);
         model.addAttribute("purchaseOrders", purchaseOrders);
         model.addAttribute("currentPage", 1);
         model.addAttribute("totalPage", totalPage);
@@ -48,11 +46,7 @@ public class PurchaseController {
         int page = Integer.valueOf(req.getParameter("currentPage"));
         int pageStart = (page - 1) * pageSize;
         List<Map> purchaseOrders = purchaseService.selPurchaseOrder(pageStart, pageSize);
-        //解决时间精确到毫秒的情况
-        for (int i = 0; i < purchaseOrders.size(); i++) {
-            Map map = purchaseOrders.get(i);
-            map.put("orderDate", String.valueOf(map.get("orderDate")).replace(".0", ""));
-        }
+        CommonUtil.dateConvert(purchaseOrders);
         model.addAttribute("purchaseOrders", purchaseOrders);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", totalPage);
@@ -73,44 +67,22 @@ public class PurchaseController {
 
     @RequestMapping(value = "purchaseOrder/create", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> addOrder(@RequestBody List<Map<String, String>> list) {
-        Date date = new Date();
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        DateFormat idSdf = new SimpleDateFormat("yyyyMMddHHmmss");
-        String orderDate = sdf.format(date.getTime());
-        String orderID = idSdf.format(date);
-        String flag = "未到货";
-        String remark = list.get(0).get("remark");
-        Integer supplierID = Integer.valueOf(list.get(0).get("supplierID"));
-        Integer employeeID = 3;
-        PurchaseOrder purchaseOrder = new PurchaseOrder();
-        purchaseOrder.setEmployeeID(employeeID);
-        purchaseOrder.setOrderDate(orderDate);
-        purchaseOrder.setOrderID(orderID);
-        purchaseOrder.setFlag(flag);
-        purchaseOrder.setRemark(remark);
-        purchaseOrder.setSupplierID(supplierID);
-        Integer res = purchaseService.insPurchaseOrder(purchaseOrder);
-        List<PurchaseOrderDetail> orderDetails = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            Map<String, String> map = list.get(i);
-            PurchaseOrderDetail detail = new PurchaseOrderDetail();
-            int quantity = Integer.valueOf(map.get("quantity"));
-            double purchasePrice = Double.valueOf(map.get("purchasePrice"));
-            detail.setOrderID(orderID);
-            detail.setQuantity(quantity);
-            detail.setProductID(Integer.valueOf(map.get("productID")));
-            detail.setPurchasePrice(purchasePrice);
-            detail.setTotalPrice(quantity * purchasePrice);
-            orderDetails.add(detail);
+    public ResponseEntity<Void> addOrder(@RequestBody List<Map<String, String>> list) {
+        try {
+            if (list == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            purchaseService.insPurchaseOrder(list);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }catch (Exception e) {
+            e.printStackTrace();
         }
-        Integer res2 = purchaseService.insPurchaseOrderDetail(orderDetails);
-        return ResponseEntity.ok("success");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @RequestMapping(value = "purchaseOrder/{categoryID}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<List<Product>> selBycategoryID(@PathVariable("categoryID") Integer categoryID) {
+    public ResponseEntity<List<Product>> selByCategoryID(@PathVariable("categoryID") Integer categoryID) {
         List<Product> products = purchaseService.selByCategoryID(categoryID);
         return ResponseEntity.ok(products);
     }
@@ -121,4 +93,61 @@ public class PurchaseController {
         return ResponseEntity.ok(maps);
     }
 
+    @RequestMapping(value = "purchaseOrder/order", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<List<Map>> selOrder(HttpServletRequest req) {
+        try {
+            String flag = req.getParameter("flag");
+            String startDate = req.getParameter("startDate");
+            String endDate = req.getParameter("endDate");
+            List<Map> maps = purchaseService.selOrderByFlag(flag, startDate, endDate);
+            CommonUtil.dateConvert(maps);
+            return ResponseEntity.ok(maps);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
+    /**
+     * 退单
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "purchaseOrder/order", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<Void> returnOrder(@RequestBody Map<String, String> map) {
+        try {
+            if (map == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            String orderID = map.get("orderID");
+            purchaseService.updOrder(orderID);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
+    /**
+     * 删除订单
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "purchaseOrder/order", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResponseEntity<Void> deleteOrder(@RequestBody Map<String, String> map) {
+        try {
+            if (map == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            String orderID = map.get("orderID");
+            purchaseService.delOrder(orderID);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
 }

@@ -7,12 +7,13 @@
     <link rel="stylesheet" th:href="@{/static/bootstrap-3.3.7/dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/static/font-awesome-4.7.0/css/font-awesome.min.css}">
     <link rel="stylesheet" th:href="@{/static/css/mainPage.css}">
-    <link rel="stylesheet" th:href="@{/static/css/purchase/supplier.css}">
     <link rel="stylesheet" th:href="@{/static/css/common.css}">
+    <link rel="stylesheet" th:href="@{/static/css/purchase/supplier.css}">
+    <link rel="stylesheet" th:href="@{/static/css/message/productMessage.css}">
     <script type="text/javascript" th:src="@{/static/jquery/jquery-3.0.0.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/bootstrap-3.3.7/dist/js/bootstrap.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/mainPage.js}"></script>
-    <script type="text/javascript" th:src="@{/static/js/stock/stockManage.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/product/productMessage.js}"></script>
 </head>
 <body>
 <!--顶部-->
@@ -109,7 +110,7 @@
                     </li>
                     <li>
                         <a th:href="@{/stock/stockManage}">
-                            <span class="sidebar-nav-item-icon glyphicon glyphicon-copy"></span>
+                            <span class="sidebar-nav-item-icon glyphicon glyphicon-paste"></span>
                             <span>出入库管理</span>
                         </a>
                     </li>
@@ -182,83 +183,161 @@
         <i class="glyphicon glyphicon-home nav-font"></i>
         <a th:href="@{/index}">首页</a>
         <span>></span>
-        <span>库存管理</span>
+        <span>产品</span>
         <span>></span>
-        <span>出入库管理</span>
-        <a th:href="@{/stock/stockManage}" class="btn btn-success btn-refresh" title="刷新"><i class="glyphicon glyphicon-repeat refresh-font"></i></a>
+        <span>产品信息</span>
+        <a th:href="@{/product/toProductMessage}" class="btn btn-success btn-refresh" title="刷新"><i class="glyphicon glyphicon-repeat refresh-font"></i></a>
     </nav>
     <div class="supplier-container">
         <article class="common-article">
-            <div class="row form-inline" style="margin-top: 10px;">
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label>订单状态：</label>
-                        <select id="orderStatus" class="form-control">
-                            <option>待入库</option>
-                            <option>待出库</option>
-                        </select>
-                    </div>
-                </div>
+            <div class="common-header">
+            <span class="float-left">
+                <a onclick="addNewProduct();" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>新增产品</a>
+            </span>
+            <span class="float-center">
+                产品名称：
+                <input type="text" id="search" name="search" size="10"/>
+                <a onclick="searchProduct()" class="btn btn-success">查询<i class="glyphicon glyphicon-search"></i></a>
+            </span>
+            <span class="pd-5 float-right">共有数据：<strong id="count" th:text="${count}"></strong>条</span>
             </div>
             <div class="common-body">
-                <table id="stockItem" class="table table-bordered table-hover table-striped">
+                <table id="productItem" class="table table-bordered table-hover table-striped">
                     <thead>
                     <tr class="info">
                         <th></th>
-                        <th>订单编号</th>
-                        <th>订单日期</th>
+                        <th>产品编号</th>
+                        <th>产品名称</th>
+                        <th>单价</th>
+                        <th>供应商名称</th>
                         <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="order:${order}">
+                    <tr th:each="products:${products}">
                         <td>
-                            <a href="" onclick="expandOrder(this);return false;">
+                            <a href="" class="expandProduct" onclick="expandProduct(this);return false;">
                                 <span class="fa fa-angle-right" style="color: black;"></span>
                             </a>
                         </td>
-                        <td th:text="${order.orderID}"></td>
-                        <td th:text="${order.orderDate}"></td>
+                        <td th:text="${products.productID}"></td>
+                        <td th:text="${products.productName}"></td>
+                        <td th:text="${products.unitPrice}"></td>
+                        <td th:text="${products.companyName}"></td>
                         <td>
-                            <a onclick="inbound(this)" class="btn btn-info">
-                                <i class="glyphicon glyphicon-copy"></i>
-                                入库
-                            </a>
+                            <a onclick="edit(this);" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i>编辑</a>
+                            <a onclick="deleteProduct(this);" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i>删除</a>
                         </td>
                     </tr>
                     </tbody>
                 </table>
+                <div id="page" align="center">
+                    <ul class="pagination">
+                        <li><a th:href="@{/product/toProductMessage}">首页</a></li>
+                        <li th:class="${currentPage == 1}?'disabled':''">
+                            <a th:if="${currentPage != 1}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage - 1}}">&laquo;</a>
+                            <a th:if="${currentPage == 1}">&laquo;</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 4 >= 1  && currentPage == totalPage}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage - 4}}">[[${currentPage - 4}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 3 >= 1  && currentPage == totalPage}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage - 3}}">[[${currentPage - 3}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 2 >= 1}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage - 2}}">[[${currentPage - 2}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage - 1 >= 1}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage - 1}}">[[${currentPage - 1}]]</a>
+                        </li>
+                        <li class="active"><a th:href="@{'/product/productInfo?currentPage' + ${currentPage}}" th:text="${currentPage}">[[${currentPage}]]</a></li>
+                        <li>
+                            <a th:if="${currentPage + 1 <= totalPage}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage + 1}}">[[${currentPage + 1}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage + 2 <= totalPage}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage + 2}}">[[${currentPage + 2}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage + 3 <= totalPage  && currentPage == totalPage}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage + 3}}">[[${currentPage + 3}]]</a>
+                        </li>
+                        <li>
+                            <a th:if="${currentPage + 4 <= totalPage  && currentPage == totalPage}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage + 4}}">[[${currentPage + 4}]]</a>
+                        </li>
+                        <li th:class="${currentPage == totalPage} ? 'disabled' : ''">
+                            <a th:if="${currentPage != totalPage}" th:href="@{'/product/productInfo?currentPage=' + ${currentPage + 1}}">&raquo;</a>
+                            <a th:if="${currentPage == totalPage}">&raquo;</a>
+                        </li>
+                        <li><a th:href="@{'/product/productInfo?currentPage=' + ${totalPage}}">尾页</a></li>
+                    </ul>
+                </div>
             </div>
         </article>
     </div>
 </div>
-<!--模态框 移库-->
-<div class="modal fade" id="moveStock" aria-label="supplierModal" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+
+<!--模态框 新增产品-->
+<div class="modal fade" id="newProduct" aria-label="supplierModal" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">移库</h4>
+                <h4 class="modal-title">新增客户</h4>
             </div>
             <div class="modal-body">
-                <div class="row form-inline">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <div class="form-group">
-                            <label>库存区域：</label>
-                            <select class="form-control" id="stockArea" name="stockArea" style="width: 100px">
-                                <option th:each="area:${stockArea}" th:value="${area.stockArea}" th:text="${area.stockArea}"></option>
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="productName" class="col-sm-2 control-label">
+                            <span style="color: red;">*</span>产品名称
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="productName" name="product" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantityPerUnit" class="col-sm-2 control-label">
+                            <span style="color: red;">*</span>规格
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="quantityPerUnit" name="product" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="unitPrice" class="col-sm-2 control-label">
+                            <span style="color: red">*</span>单价
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="unitPrice" name="product" class="form-control" max="8" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryID" class="col-sm-2 control-label">
+                            <span style="color: red">*</span>产品种类：
+                        </label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="categoryID" name="categoryID">
+                                <option th:each="categories:${categories}" th:text="${categories.categoryName}" th:value="${categories.categoryID}"></option>
                             </select>
                         </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label for="supplierID" class="col-sm-2 control-label">
+                            <span style="color: red">*</span>供应商名称：
+                        </label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="supplierID" name="supplierID">
+                                <option th:each="suppliers:${suppliers}" th:text="${suppliers.companyName}" th:value="${suppliers.supplierID}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">
                     关闭
                 </button>
-                <button type="button" class="btn btn-primary" id="save">
+                <button id="saveButton" type="button" class="btn btn-primary" onclick="saveChange()">
                     保存
                 </button>
             </div>

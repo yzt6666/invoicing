@@ -6,6 +6,10 @@ import com.yzt.service.PurchaseService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -30,13 +34,38 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
-    public Integer insPurchaseOrder(PurchaseOrder purchaseOrder) {
-        return purchaseMapper.insPurchaseOrder(purchaseOrder);
-    }
-
-    @Override
-    public Integer insPurchaseOrderDetail(List<PurchaseOrderDetail> purchaseOrderDetails) {
-        return purchaseMapper.insPurchaseOrderDetail(purchaseOrderDetails);
+    public Integer insPurchaseOrder(List<Map<String, String>> list) {
+        Date date = new Date();
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat idSdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String orderDate = sdf.format(date.getTime());
+        String orderID = idSdf.format(date);
+        String flag = "未到货";
+        String remark = list.get(0).get("remark");
+        Integer supplierID = Integer.valueOf(list.get(0).get("supplierID"));
+        Integer employeeID = 3;
+        PurchaseOrder purchaseOrder = new PurchaseOrder();
+        purchaseOrder.setEmployeeID(employeeID);
+        purchaseOrder.setOrderDate(orderDate);
+        purchaseOrder.setOrderID(orderID);
+        purchaseOrder.setFlag(flag);
+        purchaseOrder.setRemark(remark);
+        purchaseOrder.setSupplierID(supplierID);
+        purchaseMapper.insPurchaseOrder(purchaseOrder);
+        List<PurchaseOrderDetail> orderDetails = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, String> map = list.get(i);
+            PurchaseOrderDetail detail = new PurchaseOrderDetail();
+            int quantity = Integer.valueOf(map.get("quantity"));
+            double purchasePrice = Double.valueOf(map.get("purchasePrice"));
+            detail.setOrderID(orderID);
+            detail.setQuantity(quantity);
+            detail.setProductID(Integer.valueOf(map.get("productID")));
+            detail.setPurchasePrice(purchasePrice);
+            detail.setTotalPrice(quantity * purchasePrice);
+            orderDetails.add(detail);
+        }
+        return purchaseMapper.insPurchaseOrderDetail(orderDetails);
     }
 
     @Override
@@ -45,12 +74,32 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
-    public Integer selCount(String flag) {
-        return purchaseMapper.selCount(flag);
+    public Integer selCount() {
+        return purchaseMapper.selCount();
     }
 
     @Override
     public List<Map> selByOrderID(String orderID) {
         return purchaseMapper.selByOrderID(orderID);
     }
+
+    @Override
+    public List<Map> selOrderByFlag(String flag, String startDate, String endDate) {
+        return purchaseMapper.selOrderByFlag(flag, startDate, endDate);
+    }
+
+    @Override
+    public Integer delOrder(String orderID) {
+        return purchaseMapper.delOrder(orderID);
+    }
+
+    @Override
+    public Integer updOrder(String orderID) {
+        String flag = "已退单";
+        List<PurchaseOrderDetail> list = purchaseMapper.selDetail(orderID);
+        purchaseMapper.updStock(list);
+        purchaseMapper.updProduct(list);
+        return purchaseMapper.updOrder(flag, orderID);
+    }
+
 }

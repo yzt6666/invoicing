@@ -1,6 +1,5 @@
 package com.yzt.entity;
 
-import java.beans.Transient;
 
 public class Product {
     private int productID;

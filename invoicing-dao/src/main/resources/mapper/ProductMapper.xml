@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yzt.mapper.ProductMapper">
-    <select id="allProduct" resultType="product">
-        select * from products limit #{0}, #{1}
+    <select id="allProduct" resultType="map">
+        select * from suppliers s, products p where s.supplierID = p.supplierID limit #{0}, #{1}
     </select>
 
     <select id="dataCount" resultType="int">
@@ -15,4 +15,41 @@
         where p.productID = #{0} and c.categoryID = p.categoryID and s.productID = p.productID
     </select>
 
+    <insert id="insProduct">
+        insert into products values
+        (
+            default,
+            #{productName},
+            #{supplierID},
+            #{categoryID},
+            #{quantityPerUnit},
+            #{unitPrice},
+            #{unitsOnOrder}
+        )
+    </insert>
+
+    <insert id="insStock">
+        insert into stock(productID)
+        select productID from products where productID
+        not in (select productID from stock);
+    </insert>
+
+    <update id="updProduct">
+        update products set
+        productName = #{productName},
+        supplierID = #{supplierID},
+        categoryID = #{categoryID},
+        quantityPerUnit = #{quantityPerUnit},
+        unitPrice = #{unitPrice}
+        where productID = #{productID}
+    </update>
+
+    <delete id="delProduct">
+        delete from products where productID = #{0}
+    </delete>
+
+    <select id="selByProductName" resultType="map">
+        select productID, productName, unitPrice, companyName from products p, suppliers s
+        where productName like "%"#{0}"%" and p.supplierID = s.supplierID
+    </select>
 </mapper>

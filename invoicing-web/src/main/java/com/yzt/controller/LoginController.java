@@ -10,6 +10,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -19,18 +20,17 @@ public class LoginController {
     @Resource
     private UserService userService;
 
-    @RequestMapping({"/index","/"})
+    @RequestMapping(value = {"/index","/"}, method = RequestMethod.GET)
     public String toIndex() {
-        System.out.println("index");
         return "/mainPage";
     }
 
-    @RequestMapping("/toLogin")
+    @RequestMapping(value = "/toLogin", method = RequestMethod.GET)
     public String toLogin() {
         return "/index";
     }
 
-    @RequestMapping("/login")
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(String username, String password, Model model, HttpSession session) {
         //获取当前的用户
         Subject subject = SecurityUtils.getSubject();

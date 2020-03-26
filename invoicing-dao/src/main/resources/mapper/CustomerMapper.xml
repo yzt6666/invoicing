@@ -9,4 +9,46 @@
     <select id="selCount" resultType="int">
         select count(*) from customers
     </select>
+
+    <insert id="insCustomer">
+        insert into customers
+        values (
+            #{customerID},
+            #{companyName},
+            #{contactName},
+            #{contactTitle},
+            #{address},
+            #{city},
+            #{postalCode},
+            #{phone},
+            #{fax}
+        )
+    </insert>
+
+    <update id="updCustomer">
+        update customers set
+        customerID = #{customerID},
+        companyName = #{companyName},
+        contactName = #{contactName},
+        contactTitle = #{contactTitle},
+        address = #{address},
+        city = #{city},
+        postalCode = #{postalCode},
+        phone = #{phone},
+        fax = #{fax}
+        where customerID = #{customerID}
+    </update>
+
+    <delete id="delCustomer">
+        delete from customers where customerID = #{0}
+    </delete>
+
+    <select id="selByCompanyName" resultType="customer">
+        select * from customers where companyName like "%"#{0}"%"
+    </select>
+
+    <select id="selByCustomerID" resultType="customer">
+        select * from customers where customerID = #{0}
+    </select>
+
 </mapper>

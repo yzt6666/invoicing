@@ -5,19 +5,25 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TestService {
     @Autowired
-    private StockService stockService;
+    private JavaMailSenderImpl mailSender;
 
     @Test
     public void Test() {
-//        List<Map> maps = stockService.selOrder();
-//        Integer integer = stockService.updOrder(maps);
-//        System.out.println(integer);
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setSubject("你好呀");
+        mailMessage.setText("我很好");
+        mailMessage.setFrom("565872132@qq.com");
+        mailMessage.setTo("565872132@qq.com");
+        mailSender.send(mailMessage);
+
     }
 
 }

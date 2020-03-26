@@ -22,4 +22,29 @@ public class CustomerServiceImpl implements CustomerService {
     public int selCount() {
         return customerMapper.selCount();
     }
+
+    @Override
+    public Integer insCustomer(Customer customer) {
+        return customerMapper.insCustomer(customer);
+    }
+
+    @Override
+    public Integer updCustomer(Customer customer) {
+        return customerMapper.updCustomer(customer);
+    }
+
+    @Override
+    public Integer delCustomer(String customerID) {
+        return customerMapper.delCustomer(customerID);
+    }
+
+    @Override
+    public List<Customer> selByCompanyName(String companyName) {
+        return customerMapper.selByCompanyName(companyName);
+    }
+
+    @Override
+    public Customer selByCustomerID(String customerID) {
+        return customerMapper.selByCustomerID(customerID);
+    }
 }

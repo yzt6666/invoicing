@@ -9,8 +9,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Service
-public class SupplierServiceImpl implements SupplierService
-{
+public class SupplierServiceImpl implements SupplierService {
     @Resource
     private SupplierMapper supplierMapper;
 
@@ -35,7 +34,17 @@ public class SupplierServiceImpl implements SupplierService
     }
 
     @Override
+    public Integer insSupplier(Supplier supplier) {
+        return supplierMapper.insSupplier(supplier);
+    }
+
+    @Override
     public Integer updSupplier(Supplier supplier) {
         return supplierMapper.updSupplier(supplier);
+    }
+
+    @Override
+    public Integer delSupplier(Integer supplierID) {
+        return supplierMapper.delSupplier(supplierID);
     }
 }

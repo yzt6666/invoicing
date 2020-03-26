@@ -60,10 +60,9 @@ public class SystemController {
     @ResponseBody
     public ResponseEntity<Void> delUser(@RequestBody Integer employeeID) {
         try {
-            if (employeeID.intValue() == 0) {
+            if (employeeID == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
-            System.out.println(employeeID);
             systemService.delUser(employeeID);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }catch (Exception e) {

@@ -67,13 +67,27 @@ public class SupplierController {
     @RequestMapping(value = "toSupplier", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<Void> insSupplier(@RequestBody Supplier supplier) {
-        return ResponseEntity.ok(null);
+        try {
+            supplierService.insSupplier(supplier);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @RequestMapping(value = "toSupplier", method = RequestMethod.DELETE)
     public ResponseEntity<Void> delSupplier(@RequestBody Integer supplierID) {
-        System.out.println(supplierID);
-        return ResponseEntity.ok(null);
+        try {
+            if (supplierID == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            supplierService.delSupplier(supplierID);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @RequestMapping(value = "supplierInfo", method = RequestMethod.GET)
@@ -92,7 +106,10 @@ public class SupplierController {
     public ResponseEntity<List<Supplier>> getByName(@PathVariable String companyName) {
         try {
             List<Supplier> supplier = supplierService.selByCompanyName(companyName);
-            return ResponseEntity.ok(supplier);
+            if (supplier == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(supplier);
         }catch (Exception e) {
             e.printStackTrace();
         }

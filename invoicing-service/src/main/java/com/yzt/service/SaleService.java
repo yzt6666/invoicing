@@ -16,7 +16,11 @@ public interface SaleService {
 
     List<Customer> selCustomer();
 
-    int insSaleOrder(SaleOrder saleOrder);
+    int insSaleOrder(List<Map<String, String>> list);
 
-    int insSaleOrderDetail(List<SaleOrderDetail> saleOrderDetails);
+    List<Map> selOrderByFlag(String flag, String startDate, String endDate);
+
+    Integer delOrder(String orderID);
+
+    Integer updOrder(String orderID);
 }

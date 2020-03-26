@@ -6,11 +6,18 @@ import java.util.List;
 import java.util.Map;
 
 public interface ProductService {
-    List<Product> allProduct(Integer pageStart, Integer pageSize);
+    List<Map> allProduct(Integer pageStart, Integer pageSize);
 
     int dataCount();
 
-//    Product selByID(Integer productID);
     List<Map> selByID(Integer productID);
+
+    Integer insProduct(Product product);
+
+    Integer updProduct(Product product);
+
+    Integer delProduct(Integer productID);
+
+    List<Map> selByProductName(String productName);
 }
 

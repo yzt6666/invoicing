@@ -13,5 +13,9 @@ public interface SupplierMapper {
 
     Supplier selBySupplierID(Integer supplierID);
 
+    Integer insSupplier(Supplier supplier);
+
     Integer updSupplier(Supplier supplier);
+
+    Integer delSupplier(Integer supplierID);
 }

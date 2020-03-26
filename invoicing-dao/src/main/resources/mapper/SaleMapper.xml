@@ -3,9 +3,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yzt.mapper.SaleMapper">
     <select id="selSaleOrder" resultType="map">
-        select orderID, companyName, username, orderDate, shipName
+        select orderID, companyName, username, orderDate, shipName, flag
         from sale_order s, customers c, user_list u
         where s.customerID = c.customerID and s.employeeID = u.employeeID
+        order by orderDate
         limit #{0}, #{1}
     </select>
 
@@ -25,7 +26,12 @@
     </select>
 
     <insert id="insSaleOrder">
-        insert into sale_order values (
+        insert into sale_order
+        (
+         orderID, customerID, employeeID,orderDate,shipName,
+        shipAddress, shipCity, shipProvince, shipPostalCode
+        )
+        values (
         #{orderID}, #{customerID}, #{employeeID},#{orderDate},#{shipName},
         #{shipAddress}, #{shipCity}, #{shipProvince}, #{shipPostalCode}
         )
@@ -43,4 +49,57 @@
             )
         </foreach>
     </insert>
+
+    <select id="selOrderByFlag" resultType="map">
+        select orderID, companyName, username, orderDate, shipName, flag
+        from sale_order s, customers c, user_list u
+        where s.customerID = c.customerID and s.employeeID = u.employeeID
+        <if test="flag != null">
+            and flag = #{flag}
+        </if>
+        <if test="startDate != null and endDate != null">
+            and orderDate between #{startDate} and #{endDate}
+        </if>
+        order by orderDate
+    </select>
+
+
+    <delete id="delOrder">
+        delete s,d from sale_order s
+        left join sale_order_detail d
+        on s.orderID = d.orderID
+        where s.orderID = #{0}
+    </delete>
+
+    <update id="updOrder">
+        update sale_order set flag = #{0} where orderID = #{1}
+    </update>
+
+    <update id="updStock">
+        update stock set unitsInStock = unitsInStock +
+        <foreach collection="list" item="item" index="index" separator=" " open="case productID" close="end">
+            when #{item.productID} then #{item.quantity}
+        </foreach>
+        where productID in (
+        <foreach collection="list" item="item" index="index" separator=",">
+            #{item.productID}
+        </foreach>
+        )
+    </update>
+
+    <update id="updProduct">
+        update products set unitsOnOrder = unitsOnOrder -
+        <foreach collection="list" item="item" index="index" separator=" " open="case productID" close="end">
+            when #{item.productID} then #{item.quantity}
+        </foreach>
+        where productID in (
+        <foreach collection="list" item="item" index="index" separator=",">
+            #{item.productID}
+        </foreach>
+        )
+    </update>
+
+    <select id="selDetail" resultType="saleOrderDetail">
+        select * from sale_order_detail where orderID = #{0}
+    </select>
 </mapper>

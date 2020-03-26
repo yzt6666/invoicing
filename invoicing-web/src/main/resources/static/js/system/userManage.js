@@ -72,7 +72,6 @@ function deleteUser(dom) {
     const td = self.parent("td");
     const tr = td.parent("tr");
     employeeID = tr.find("td:eq(0)").text();
-    console.log(employeeID);
     $.ajax({
         type : "DELETE",
         url : "/system/toUserManage",

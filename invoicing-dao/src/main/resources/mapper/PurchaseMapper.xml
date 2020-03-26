@@ -33,18 +33,69 @@
     </insert>
 
     <select id="selPurchaseOrder" resultType="map">
-        select orderID, companyName, username, orderDate, remark
+        select orderID, companyName, username, orderDate, remark, flag
         from purchase_order p, suppliers s, user_list u
         where p.supplierID = s.supplierID and p.employeeID = u.employeeID
         limit #{0}, #{1}
     </select>
     <select id="selCount" resultType="int">
-        select count(*) from purchase_order where flag = #{0}
+        select count(*) from purchase_order
     </select>
 
     <select id="selByOrderID" resultType="map">
         select productName, purchasePrice, quantity, totalPrice
         from purchase_order_detail detail, products
         where orderID = #{0} and detail.productID = products.productID
+    </select>
+
+    <select id="selOrderByFlag" resultType="map">
+        select orderID, companyName, username, orderDate, remark, flag
+        from purchase_order p, suppliers s, user_list u
+        where p.supplierID = s.supplierID and p.employeeID = u.employeeID
+        <if test="flag != null">
+            and flag = #{flag}
+        </if>
+        <if test="startDate != null and endDate != null">
+            and orderDate between #{startDate} and #{endDate}
+        </if>
+    </select>
+
+    <delete id="delOrder">
+        delete p,d from purchase_order p
+        left join purchase_order_detail d
+        on p.orderID = d.orderID
+        where p.orderID = #{0}
+    </delete>
+
+    <update id="updOrder">
+        update purchase_order set flag = #{0} where orderID = #{1}
+    </update>
+
+    <update id="updStock">
+        update stock set unitsInStock = unitsInStock -
+        <foreach collection="list" item="item" index="index" separator=" " open="case productID" close="end">
+            when #{item.productID} then #{item.quantity}
+        </foreach>
+        where productID in (
+            <foreach collection="list" item="item" index="index" separator=",">
+                #{item.productID}
+            </foreach>
+        )
+    </update>
+
+    <update id="updProduct">
+        update products set unitsOnOrder = unitsOnOrder -
+        <foreach collection="list" item="item" index="index" separator=" " open="case productID" close="end">
+            when #{item.productID} then #{item.quantity}
+        </foreach>
+        where productID in (
+        <foreach collection="list" item="item" index="index" separator=",">
+            #{item.productID}
+        </foreach>
+        )
+    </update>
+
+    <select id="selDetail" resultType="purchaseOrderDetail">
+        select * from purchase_order_detail where orderID = #{0}
     </select>
 </mapper>

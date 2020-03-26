@@ -12,6 +12,7 @@
     <script type="text/javascript" th:src="@{/static/jquery/jquery-3.0.0.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/bootstrap-3.3.7/dist/js/bootstrap.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/mainPage.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/sale/customer.js}"></script>
 </head>
 <body>
 <!--顶部-->
@@ -127,12 +128,6 @@
                             <span>产品信息</span>
                         </a>
                     </li>
-                    <li>
-                        <a th:href="@{/product/add}">
-                            <span class="sidebar-nav-item-icon glyphicon glyphicon-user"></span>
-                            <span>新增产品</span>
-                        </a>
-                    </li>
                 </ul>
             </li>
             <li>
@@ -196,17 +191,17 @@
         <article class="common-article">
             <div class="common-header">
                 <span class="float-left">
-                    <a onclick="supplierModal();" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>新增客户</a>
+                    <a onclick="addNewCustomer();" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>新增客户</a>
                 </span>
                 <span class="float-center">
                     客户名称：
                     <input type="text" id="search" name="search" size="10"/>
-                    <a class="btn btn-success">查询<i class="glyphicon glyphicon-search"></i></a>
+                    <a onclick="searchCustomer()" class="btn btn-success">查询<i class="glyphicon glyphicon-search"></i></a>
                 </span>
-                <span class="pd-5 float-right">共有数据：<strong th:text="${count}"></strong>条</span>
+                <span class="pd-5 float-right">共有数据：<strong id="count" th:text="${count}"></strong>条</span>
             </div>
             <div class="common-body">
-                <table class="table table-bordered table-hover common-table table-striped">
+                <table id="customerItem" class="table table-bordered table-hover common-table table-striped">
                     <thead>
                     <tr class="info">
                         <th>客户编号</th>
@@ -233,13 +228,13 @@
                         <td th:text="${customers.fax}"></td>
                         <td th:text="${customers.postalCode}"></td>
                         <td>
-                            <a onclick="addSupplier();" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i>编辑</a>
-                            <a onclick="addSupplier();" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i>删除</a>
+                            <a onclick="edit(this);" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i>编辑</a>
+                            <a onclick="deleteCustomer(this);" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i>删除</a>
                         </td>
                     </tr>
                     </tbody>
                 </table>
-                <div align="center">
+                <div id="page" align="center">
                     <ul class="pagination">
                         <li><a th:href="@{/customer/toCustomer}">首页</a></li>
                         <li th:class="${currentPage == 1}?'disabled':''">
@@ -283,8 +278,8 @@
     </div>
 </div>
 
-<!--模态框 新增供应商-->
-<div class="modal fade" id="newSupplier" aria-label="supplierModal" aria-hidden="true">
+<!--模态框 新增客户-->
+<div class="modal fade" id="newCustomer" aria-label="supplierModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -294,43 +289,72 @@
                 <h4 class="modal-title">新增客户</h4>
             </div>
             <div class="modal-body">
-                <form class="form-group">
+                <form class="form-horizontal">
                     <div class="form-group">
-                        <span style="color: red">*</span>
-                        <label for="companyName">公司名称</label>
-                        <input type="text" id="companyName" name="companyName" class="form-control"/>
+                        <label for="customerID" class="col-sm-2 control-label">
+                            <span style="color: red;">*</span>客户编号
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="customerID" name="customer" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <span style="color: red">*</span>
-                        <label for="contactName">联系人</label>
-                        <input type="text" id="contactName" name="contactName" class="form-control"/>
+                        <label for="companyName" class="col-sm-2 control-label">
+                            <span style="color: red;">*</span>客户名称
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="companyName" name="customer" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="contactTitle">联系人职位</label>
-                        <input type="text" id="contactTitle" name="contactTitle" class="form-control"/>
+                        <label for="contactName" class="col-sm-2 control-label">
+                            <span style="color: red">*</span>联系人
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="contactName" name="customer" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <span style="color: red">*</span>
-                        <label for="address">地址</label>
-                        <input type="text" id="address" name="address" class="form-control"/>
+                        <label for="contactTitle" class="col-sm-2 control-label">职位</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="contactTitle" name="customer" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <span style="color: red">*</span>
-                        <label for="city">城市</label>
-                        <input type="text" id="city" name="city" class="form-control"/>
+                        <label for="address" class="col-sm-2 control-label">
+                            <span style="color: red">*</span>地址
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="address" name="customer" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <span style="color: red">*</span>
-                        <label for="phone">电话</label>
-                        <input type="text" id="phone" name="phone" class="form-control"/>
+                        <label for="city" class="col-sm-2 control-label">
+                            <span style="color: red">*</span>城市
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="city" name="customer" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="fax">传真</label>
-                        <input type="text" id="fax" name="fax" class="form-control"/>
+                        <label for="phone" class="col-sm-2 control-label">
+                            <span style="color: red">*</span>电话
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="text" id="phone" name="customer" class="form-control"/>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="postalCode">邮政编码</label>
-                        <input type="text" id="postalCode" name="postalCode" class="form-control"/>
+                        <label for="fax" class="col-sm-2 control-label">传真</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="fax" name="customer" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="postalCode" class="col-sm-2 control-label">邮政编码</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="postalCode" name="customer" class="form-control"/>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -338,7 +362,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">
                     关闭
                 </button>
-                <button type="button" class="btn btn-primary" onclick="addSupplier()">
+                <button id="saveButton" type="button" class="btn btn-primary" onclick="saveChange()">
                     保存
                 </button>
             </div>

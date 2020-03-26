@@ -1,4 +1,4 @@
-let saleArray = new Array();
+let productArray = new Array();
 $(function () {
     //产品种类改变时,修改产品名称里面的值
     $("#categoryID").change(function () {
@@ -28,13 +28,14 @@ $(function () {
 
         });
     });
+
     //选择产品后将信息添加到表格中
     $("#productID").change(function () {
         const productID = $(this).val();
         if (judgeID(productID)) {
             return;
         } else {
-            if (saleArray.length == 0) {
+            if (productArray.length == 0) {
                 $("#purchaseItem tbody").empty();
             }
             const tr = $("<tr></tr>");
@@ -49,7 +50,10 @@ $(function () {
                     const idTd = $("<td></td>").append(res["productID"]);
                     const nameTd = $("<td></td>").append(res["productName"]);
                     const quantityPerUnit = $("<td></td>").append(res["quantityPerUnit"]);
-                    const unitPrice = $("<td></td>").append(res["unitPrice"] + "元");
+                    const purchasePrice = $("<td width='200px'></td>")
+                        .append($("<input type='text' id='purchasePrice' name='purchasePrice' class='form-control' maxlength='8'/>")
+                            .attr("onkeyup", "this.value= this.value.match(/\\d+(\\.\\d{0,2})?/) ? this.value.match(/\\d+(\\.\\d{0,2})?/)[0] : ''")
+                        );
                     const quantity = $("<td width='200px'></td>")
                         .append($("<input type='text' id='quantity' name='quantity' class='form-control' max='8'/>")
                             .attr("onkeyup", "value=value.replace(/^(0+)|[^\\d]+/g,'')")
@@ -57,53 +61,44 @@ $(function () {
                     const operate = $("<td></td>").append($("<a onclick='deleteID(this)' class='btn btn-danger'></a>")
                         .append("<i class='glyphicon glyphicon-trash'>删除</i>")
                     );
-                    tr.append(idTd).append(nameTd).append(quantityPerUnit).append(unitPrice).append(quantity).append(operate);
+                    tr.append(idTd).append(nameTd).append(quantityPerUnit).append(purchasePrice).append(quantity).append(operate);
                     $("#purchaseItem tbody").append(tr);
                 }
             });
-            saleArray.push(productID);
+            productArray.push(productID);
         }
     });
-
+    //提交数据
     $("#saveInfo").click(function () {
         let purchaseArray = new Array();
-        if (saleArray.length != 0) {
-            const customerID = $("#customerID").val();
-            const shipProvince = $("#shipProvince").val();
-            const shipCity = $("#shipCity").val();
-            const shipAddress = $("#shipAddress").val();
-            const shipPostalCode = $("#shipPostalCode").val();
-            const shipName = $("#shipName").val();
+        if (productArray.length != 0) {
+            const supplierID = $("#supplierID").val();
+            const remark = $("#remark").val();
+            console.log(remark);
             const trList = $("#purchaseItem tbody").children("tr");
             for (let i = 0; i < trList.length; i++) {
                 const td = trList.eq(i).find("td");
                 const purchaseOrder = {
-                    "customerID" : customerID,
-                    "shipProvince" : shipProvince,
-                    "shipCity" : shipCity,
-                    "shipAddress" : shipAddress,
-                    "shipPostalCode" : shipPostalCode,
-                    "shipName" : shipName,
+                    "supplierID" : supplierID,
+                    "remark" : remark,
                     "productID" : td.eq(0).text(),
                     "productName" : td.eq(1).text(),
-                    "unitPrice" : td.eq(3).text(),
+                    "purchasePrice" : td.eq(3).find("input").val(),
                     "quantity" : td.eq(4).find("input").val()
                 };
                 purchaseArray.push(purchaseOrder);
             }
-            console.log(purchaseArray);
             $.ajax({
                 type : "POST",
-                url : "/sale/saleOrder/create",
+                url : "/purchase/purchaseOrder/create",
                 data : JSON.stringify(purchaseArray),
                 contentType : "application/json",
                 dataType : "text",
-                success : function () {
-                    // alert("添加订单成功");
-                    // window.location.href = "/sale/saleOrder/create";
+                success : function (res) {
+                    window.location.href = "/purchase/purchaseOrder";
                 },
                 error : function () {
-                    alert("添加订单失败");
+                    console.log("error");
                 }
             });
         }
@@ -111,8 +106,8 @@ $(function () {
 });
 
 function judgeID(productID) {
-    for (let i = 0; i < saleArray.length; i++) {
-        if (saleArray[i] == productID) {
+    for (let i = 0; i < productArray.length; i++) {
+        if (productArray[i] == productID) {
             return true;
         }
     }
@@ -126,10 +121,10 @@ function deleteID(data) {
     const productID = tr.find("td").eq(0).text();
     tr.remove();
 
-    for (let i = 0; i < saleArray.length; i++) {
-        if (saleArray[i] == productID) {
-            saleArray.splice(i, 1);
-            if (saleArray.length == 0) {
+    for (let i = 0; i < productArray.length; i++) {
+        if (productArray[i] == productID) {
+            productArray.splice(i, 1);
+            if (productArray.length == 0) {
                 //数组为空时，添加暂无数据行
                 $("#purchaseItem tbody").append($("<tr></tr>").append("<td colspan='6'>暂无数据</td>"));
             }
@@ -139,7 +134,7 @@ function deleteID(data) {
 }
 
 function deleteAll() {
-    saleArray = new Array();
+    productArray = new Array();
     $("#purchaseItem tbody").empty();
     $("#purchaseItem tbody").append($("<tr></tr>").append("<td colspan='6'>暂无数据</td>"));
 }
