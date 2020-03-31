@@ -5,6 +5,9 @@
     <select id="selAllUser" resultType="userList">
         select * from user_list limit #{0}, #{1}
     </select>
+    <select id="selCount" resultType="int">
+        select count(*) from user_list
+    </select>
 
     <select id="selByEmployeeID" resultType="userList">
         select perms from user_list where employeeID = #{0}

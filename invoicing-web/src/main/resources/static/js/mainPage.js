@@ -1,4 +1,5 @@
 $(function(){
+
     //左侧导航栏点击展开下拉菜单
     $(".menu-main").click(function(){
         var self = $(this);
@@ -16,3 +17,5 @@ $(function(){
         }
     });
 });
+
+

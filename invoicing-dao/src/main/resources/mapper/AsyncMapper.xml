@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzt.mapper.AsyncMapper">
+    <select id="selTodaySale" resultType="map">
+        select t.productID productID,productName, SUM(t.quantity) quantity, SUM(t.totalPrice) totalPrice
+        from (select productID,quantity, totalPrice from sale_order s, sale_order_detail d
+        where (TO_DAYS(now()) - TO_DAYS(orderDate)) = 1
+        and s.orderID = d.orderID
+        group by productID) t, products p
+        where t.productID = p.productID
+        GROUP BY t.productID
+    </select>
+</mapper>

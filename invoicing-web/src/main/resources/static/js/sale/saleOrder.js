@@ -32,10 +32,10 @@ function expandOrder(dom) {
                 for (let i = 0; i < data.length; i++) {
                     res = data[i];
                     const div = $("<div class='row form-inline' align='left'></div>")
-                        .append($("<div class='col-sm-1'></div>").append($("<label style='width: 70px;'>产品名称：</label>")).append(res["productName"]))
-                        .append($("<div class='col-sm-1'></div>").append($("<label style='width: 50px;'>售价：</label>")).append(res["unitPrice"] + "元"))
-                        .append($("<div class='col-sm-1'></div>").append($("<label style='width: 50px;'>数量：</label>")).append(res["quantity"]))
-                        .append($("<div class='col-sm-1'></div>").append($("<label style='width: 70px;'>合计金额：</label>")).append(res["totalPrice"] + "元"));
+                        .append($("<div class='col-sm-2'></div>").append($("<label style='width: 70px;'>产品名称：</label>")).append(res["productName"]))
+                        .append($("<div class='col-sm-2'></div>").append($("<label style='width: 50px;'>售价：</label>")).append(res["unitPrice"] + "元"))
+                        .append($("<div class='col-sm-2'></div>").append($("<label style='width: 50px;'>数量：</label>")).append(res["quantity"]))
+                        .append($("<div class='col-sm-2'></div>").append($("<label style='width: 70px;'>合计金额：</label>")).append(res["totalPrice"] + "元"));
                     newTd.append(div);
                     newTr.append(newTd);
                     tr.after(newTr);
@@ -143,12 +143,16 @@ function buildTable(data) {
                 .append($("<a onclick='returnOrder(this)' class='btn btn-warning'></a>")
                     .append($("<i class='glyphicon glyphicon-file'></i>")).append("退单"))
                 .append($("<a onclick='deleteOrder(this)' class='btn btn-danger'></a>")
-                    .append($("<i class='glyphicon glyphicon-trash'></i>")).append("删除"));
+                    .append($("<i class='glyphicon glyphicon-trash'></i>")).append("删除"))
+                .append($("<a onclick='exportExcel(this);' class='btn btn-success'></a>")
+                    .append($("<i class='glyphicon glyphicon-save'></i>")).append("下载"));
             console.log(operation);
         } else {
             operation = $("<td></td>")
                 .append($("<a onclick='deleteOrder(this)' class='btn btn-danger'></a>")
-                    .append($("<i class='glyphicon glyphicon-trash'></i>")).append("删除"));
+                    .append($("<i class='glyphicon glyphicon-trash'></i>")).append("删除"))
+                .append($("<a onclick='exportExcel(this);' class='btn btn-success'></a>")
+                    .append($("<i class='glyphicon glyphicon-save'></i>")).append("下载"));
         }
         tr.append(expand).append(orderID).append(companyName).append(username).append(orderDate).append(shipName)
             .append(operation);
@@ -202,4 +206,13 @@ function returnOrder(dom) {
             alert("退单失败");
         }
     });
+}
+
+//导出Excel
+function exportExcel(dom) {
+    const self = $(dom);
+    const td = self.parent("td");
+    const tr = td.parent("tr");
+    const orderID = tr.find("td:eq(1)").text();
+    window.location.href = "/sale/saleOrder/export?orderID="+orderID;
 }

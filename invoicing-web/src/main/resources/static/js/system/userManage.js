@@ -86,3 +86,38 @@ function deleteUser(dom) {
         }
     })
 }
+
+//数据备份
+function backup() {
+    window.location.href = "/system/backup";
+}
+
+//打开文件选择对话框
+function openFile() {
+    $("#recoverFile").click();
+}
+
+//数据恢复
+function recover() {
+    const file = $("#recoverFile")[0].files[0];
+    const formData = new FormData();
+    formData.append("name", file.name);
+    formData.append("file", file);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    console.log(reader);
+    $.ajax({
+        type : "POST",
+        url : "/system/recover",
+        data : formData,
+        processData : false,
+        contentType : false,
+        success : function () {
+            alert("数据恢复成功");
+        },
+        error : function () {
+            alert("数据恢复失败");
+        }
+    });
+
+}

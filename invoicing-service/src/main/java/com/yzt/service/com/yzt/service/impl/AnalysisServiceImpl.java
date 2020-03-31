@@ -14,13 +14,13 @@ public class AnalysisServiceImpl implements AnalysisService {
     private AnalysisMapper analysisMapper;
 
     @Override
-    public List<Map> selUnitsOnOrder(String year, String month) {
-        return analysisMapper.selUnitsOnOrder(year, month);
+    public List<Map> selUnitsOnOrder(String year, String month, String flag) {
+        return analysisMapper.selUnitsOnOrder(year, month, flag);
     }
 
     @Override
-    public List<Map> selCategorySale(String year, String month, Integer categoyrID) {
-        return analysisMapper.selCategorySale(year, month, categoyrID);
+    public List<Map> selCategorySale(String year, String month, Integer categoryID, String flag) {
+        return analysisMapper.selCategorySale(year, month, categoryID, flag);
     }
 
     @Override
@@ -29,8 +29,8 @@ public class AnalysisServiceImpl implements AnalysisService {
     }
 
     @Override
-    public List<Map> selProductRank(String year, String month) {
-        return analysisMapper.selProductRank(year, month);
+    public List<Map> selProductRank(String year, String month, String flag) {
+        return analysisMapper.selProductRank(year, month, flag);
     }
 
     @Override

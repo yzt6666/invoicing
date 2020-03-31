@@ -17,8 +17,6 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 public class LoginController {
-    @Resource
-    private UserService userService;
 
     @RequestMapping(value = {"/index","/"}, method = RequestMethod.GET)
     public String toIndex() {
@@ -30,7 +28,7 @@ public class LoginController {
         return "/index";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(String username, String password, Model model, HttpSession session) {
         //获取当前的用户
         Subject subject = SecurityUtils.getSubject();
@@ -48,6 +46,18 @@ public class LoginController {
             return "/index";
         }
 
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logout() {
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
+        return "/index";
+    }
+
+    @RequestMapping(value = "/error", method = RequestMethod.GET)
+    public String error() {
+        return "/error";
     }
 
 }

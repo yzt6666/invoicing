@@ -9,6 +9,8 @@ public interface SystemMapper {
 
     UserList selByEmployeeID(Integer employeeID);
 
+    Integer selCount();
+
     Integer updPerms(String perms, Integer employeeID);
 
     Integer delUser(Integer employeeID);

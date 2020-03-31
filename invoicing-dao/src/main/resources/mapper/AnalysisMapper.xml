@@ -5,7 +5,7 @@
     <select id="selUnitsOnOrder" resultType="map">
         select categoryName, sum(quantity) as quantity, sum(totalPrice) sale
         from categories c, sale_order_detail s, products p, sale_order sale
-        where c.categoryID = p.categoryID and s.productID = p.productID
+        where flag=#{2} and c.categoryID = p.categoryID and s.productID = p.productID
         and sale.orderID = s.orderID
         and year(orderDate) = #{0} and month(orderDate) = #{1}
         group by c.categoryID;
@@ -14,7 +14,7 @@
     <select id="selCategorySale" resultType="map">
         select productName, sum(quantity) as quantity, sum(totalPrice) sale
         from categories c, sale_order_detail s, products p, sale_order sale
-        where c.categoryID = p.categoryID and s.productID = p.productID
+        where flag = #{3} and c.categoryID = p.categoryID and s.productID = p.productID
         and sale.orderID = s.orderID and YEAR(orderDate) = #{0} and month(orderDate) = #{1}
         and p.categoryID = #{2}
         group by p.productID
@@ -27,7 +27,7 @@
     <select id="selProductRank" resultType="map">
         select productName, categoryName, sum(quantity) as quantity
         from categories c, sale_order_detail s, products p, sale_order sale
-        where c.categoryID = p.categoryID and s.productID = p.productID
+        where flag = #{2} and c.categoryID = p.categoryID and s.productID = p.productID
         and sale.orderID = s.orderID and YEAR(orderDate) = #{0} and month(orderDate) = #{1}
         group by p.productID
         order by quantity desc

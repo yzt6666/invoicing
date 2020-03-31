@@ -32,4 +32,6 @@ public interface SaleMapper {
     Integer updProduct(List<SaleOrderDetail> list);
 
     List<SaleOrderDetail> selDetail(String orderID);
+
+    List<Map> selOrderByID(String orderID);
 }

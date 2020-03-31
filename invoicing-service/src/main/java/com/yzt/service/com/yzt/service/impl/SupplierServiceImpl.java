@@ -47,4 +47,14 @@ public class SupplierServiceImpl implements SupplierService {
     public Integer delSupplier(Integer supplierID) {
         return supplierMapper.delSupplier(supplierID);
     }
+
+    @Override
+    public List<Supplier> selSupplierByNames(List<String> list) {
+        return supplierMapper.selSupplierByNames(list);
+    }
+
+    @Override
+    public List<Supplier> selAllSupplier() {
+        return supplierMapper.selAllSupplier();
+    }
 }

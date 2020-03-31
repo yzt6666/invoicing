@@ -1,8 +1,11 @@
 package com.yzt.controller;
 
 import com.yzt.entity.Customer;
+import com.yzt.entity.Supplier;
 import com.yzt.service.CustomerService;
+import com.yzt.util.ExcelUtil;
 import org.apache.catalina.startup.Catalina;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,11 +14,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/customer")
@@ -125,5 +134,68 @@ public class CustomerController {
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("count", count);
         return "/sale/customer";
+    }
+
+    @RequestMapping(value = "toCustomer/export", method = RequestMethod.GET)
+    @ResponseBody
+    public void exportExcel(HttpServletRequest req, HttpServletResponse resp) {
+        String companyNames = req.getParameter("companyName");
+        List<Customer> list;
+        if (companyNames == "") {
+            list = customerService.selAllCustomer();
+        } else {
+            String[] nameArray = companyNames.split(",");
+            List<String> res = new ArrayList<>();
+            for (String str : nameArray) {
+                res.add(str);
+            }
+            list = customerService.selCustomerByNames(res);
+        }
+        System.out.println(list);
+        String fileName = UUID.randomUUID() + ".xlsx";
+        String[] title = {"客户编号", "公司名称", "联系人", "联系人职位", "地址", "城市", "电话", "传真", "邮政编码"};
+        String sheetName = "客户信息表";
+        String[][] content = new String[list.size()][title.length];
+        for (int i = 0; i < list.size(); i++) {
+            Customer customer = list.get(i);
+            content[i][0] = customer.getCustomerID();
+            content[i][1] = customer.getCompanyName();
+            content[i][2] = customer.getContactName();
+            content[i][3] = customer.getContactTitle();
+            content[i][4] = customer.getAddress();
+            content[i][5] = customer.getCity();
+            content[i][6] = customer.getPhone();
+            content[i][7] = customer.getFax();
+            content[i][8] = customer.getPostalCode();
+        }
+        ExcelUtil excelUtil = new ExcelUtil();
+        XSSFWorkbook workbook = excelUtil.getHSSFWorkbook(sheetName, title, content, null, null, null);
+        try {
+            this.setResponseHeader(resp, fileName);
+            OutputStream os = resp.getOutputStream();
+            workbook.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 发送响应流方法
+    public void setResponseHeader(HttpServletResponse response, String fileName) {
+        try {
+            try {
+                fileName = new String(fileName.getBytes(), "ISO8859-1");
+            } catch (UnsupportedEncodingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            response.setContentType("application/octet-stream;charset=ISO8859-1");
+            response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+            response.addHeader("Pargam", "no-cache");
+            response.addHeader("Cache-Control", "no-cache");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

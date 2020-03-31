@@ -49,4 +49,16 @@
     <delete id="delSupplier">
         delete from suppliers where supplierID = #{0}
     </delete>
+
+    <select id="selSupplierByNames" resultType="supplier">
+        select * from suppliers
+        where companyName in
+        <foreach collection="list" item="companyName" index="index" open="(" separator="," close=")">
+            #{companyName}
+        </foreach>
+    </select>
+
+    <select id="selAllSupplier" resultType="supplier">
+        select * from suppliers
+    </select>
 </mapper>

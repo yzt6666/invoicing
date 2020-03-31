@@ -1,11 +1,12 @@
 package com.yzt.controller;
 
-import com.yzt.entity.Product;
 import com.yzt.entity.PurchaseOrder;
 import com.yzt.entity.SaleOrder;
 import com.yzt.entity.Stock;
-import com.yzt.service.SaleService;
 import com.yzt.service.StockService;
+import com.yzt.util.CommonUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,19 +56,32 @@ public class StockController {
 
     @RequestMapping(value = "toStocktaking", method = RequestMethod.PUT)
     @ResponseBody
-    public ResponseEntity<String> updateArea(@RequestBody Stock stock) {
-        Integer res = stockService.updStockArea(stock);
-        System.out.println(res);
-        System.out.println(stock);
-        return ResponseEntity.ok("yes");
+    public ResponseEntity<Void> updateArea(@RequestBody Stock stock) {
+        try {
+            if (stock == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            stockService.updStockArea(stock);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @RequestMapping(value = "toStocktaking/search/{productName}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<Map>> searchProduct(@PathVariable("productName") String productName) {
-        System.out.println(productName);
-        List<Map> stock = stockService.selByName(productName, 0, pageSize);
-        return ResponseEntity.ok(stock);
+        try {
+            if (StringUtils.isEmpty(productName)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            List<Map> stock = stockService.selByName(productName, 0, pageSize);
+            return ResponseEntity.ok(stock);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @RequestMapping(value = "stockManage", method = RequestMethod.GET)
@@ -85,60 +99,95 @@ public class StockController {
     @RequestMapping(value = "stockManage/inbound", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<Map>> inbound() {
-        List<Map> order = stockService.selInboundOrder("未完成");
-        for (int i = 0; i < order.size(); i++) {
-            Map map = order.get(i);
-            map.put("orderDate", String.valueOf(map.get("orderDate")).replace(".0", ""));
+        try {
+            List<Map> order = stockService.selInboundOrder("未完成");
+            CommonUtil.dateConvert(order);
+            return ResponseEntity.ok(order);
+        }catch (Exception e) {
+            e.printStackTrace();
         }
-        return ResponseEntity.ok(order);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @RequestMapping(value = "stockManage/inbound", method = RequestMethod.PUT)
     @ResponseBody
-    public ResponseEntity<String> inboundOrder(@RequestBody PurchaseOrder purchaseOrder) {
-        String orderID = purchaseOrder.getOrderID();
-        String flag = "已完成";
-        List<Map> maps = stockService.selInboundByID(orderID);
-        Integer res = stockService.updStockUnit(maps);
-        Integer res2 = stockService.updInbound(flag, orderID);
-
-        return ResponseEntity.ok("yes");
+    public ResponseEntity<Void> inboundOrder(@RequestBody PurchaseOrder purchaseOrder) {
+        try {
+            if (purchaseOrder == null || StringUtils.isEmpty(purchaseOrder.getOrderID())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            String orderID = purchaseOrder.getOrderID();
+            String flag = "已完成";
+            List<Map> maps = stockService.selInboundByID(orderID);
+            stockService.updStockUnit(maps);
+            stockService.updInbound(flag, orderID);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @RequestMapping(value = "stockManage/outbound", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<Map>> outbound() {
-        List<Map> order = stockService.selOutboundOrder("未完成");
-        for (int i = 0; i < order.size(); i++) {
-            Map map = order.get(i);
-            map.put("orderDate", String.valueOf(map.get("orderDate")).replace(".0", ""));
+        try {
+            List<Map> order = stockService.selOutboundOrder("未完成");
+            CommonUtil.dateConvert(order);
+            return ResponseEntity.status(HttpStatus.OK).body(order);
+        }catch (Exception e) {
+            e.printStackTrace();
         }
-        return ResponseEntity.ok(order);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @RequestMapping(value = "stockManage/outbound", method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity<String> outboundOrder(@RequestBody SaleOrder saleOrder) {
-        String flag = "已完成";
-        String orderID = saleOrder.getOrderID();
-        List<Map> maps = stockService.selOutboundByID(orderID);
-        Integer res = stockService.updUnitsOnOrder(maps);
-        Integer res2 = stockService.updOutboundUnit(maps);
-        Integer res3 = stockService.updOutbound(flag, orderID);
-        return ResponseEntity.ok("yes");
+        try {
+            if (saleOrder == null || StringUtils.isEmpty(saleOrder.getOrderID())){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            String flag = "已完成";
+            String orderID = saleOrder.getOrderID();
+            List<Map> maps = stockService.selOutboundByID(orderID);
+            stockService.updUnitsOnOrder(maps);
+            stockService.updOutboundUnit(maps);
+            stockService.updOutbound(flag, orderID);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @RequestMapping(value = "stockManage/inbound/{orderID}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<Map>> expandInbound(@PathVariable("orderID") String orderID) {
-        List<Map> maps = stockService.selInboundByID(orderID);
-        return ResponseEntity.ok(maps);
+        try {
+            if (StringUtils.isEmpty(orderID)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            List<Map> maps = stockService.selInboundByID(orderID);
+            return ResponseEntity.ok(maps);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @RequestMapping(value = "stockManage/outbound/{orderID}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<Map>> expandOutbound(@PathVariable("orderID") String orderID) {
-        List<Map> maps = stockService.selOutboundByID(orderID);
-        return ResponseEntity.ok(maps);
+        try {
+            if (StringUtils.isEmpty(orderID)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            List<Map> maps = stockService.selOutboundByID(orderID);
+            return ResponseEntity.ok(maps);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 }

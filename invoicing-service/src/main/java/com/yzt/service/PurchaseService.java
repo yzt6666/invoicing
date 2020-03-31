@@ -12,7 +12,7 @@ public interface PurchaseService {
 
     List<Supplier> selSupplier();
 
-    Integer insPurchaseOrder(List<Map<String, String>> maps);
+    Integer insPurchaseOrder(List<Map<String, String>> maps, Integer employeeID);
 
     List<Map> selPurchaseOrder(Integer pageStart, Integer pageSize);
 
@@ -24,6 +24,7 @@ public interface PurchaseService {
 
     Integer delOrder(String orderID);
 
-    Integer updOrder(String orderID);
+    List<Map> selOrderByID(String orderID);
 
+    Integer updOrder(String orderID);
 }

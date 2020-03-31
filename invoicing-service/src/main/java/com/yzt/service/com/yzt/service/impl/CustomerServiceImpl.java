@@ -47,4 +47,14 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer selByCustomerID(String customerID) {
         return customerMapper.selByCustomerID(customerID);
     }
+
+    @Override
+    public List<Customer> selAllCustomer() {
+        return customerMapper.selAllCustomer();
+    }
+
+    @Override
+    public List<Customer> selCustomerByNames(List<String> list) {
+        return customerMapper.selCustomerByNames(list);
+    }
 }

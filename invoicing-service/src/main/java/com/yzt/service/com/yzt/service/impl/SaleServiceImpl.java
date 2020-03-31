@@ -40,7 +40,7 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
-    public int insSaleOrder(List<Map<String, String>> list) {
+    public int insSaleOrder(List<Map<String, String>> list, Integer employeeID) {
         SaleOrder saleOrder = new SaleOrder();
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -49,7 +49,7 @@ public class SaleServiceImpl implements SaleService {
         String orderDate = sdf.format(date);
         saleOrder.setOrderID(orderID);
         saleOrder.setCustomerID(list.get(0).get("customerID"));
-        saleOrder.setEmployeeID(6);
+        saleOrder.setEmployeeID(employeeID);
         saleOrder.setOrderDate(orderDate);
         saleOrder.setShipCity(list.get(0).get("shipCity"));
         saleOrder.setShipProvince(list.get(0).get("shipProvince"));
@@ -90,6 +90,11 @@ public class SaleServiceImpl implements SaleService {
         saleMapper.updStock(list);
         saleMapper.updProduct(list);
         return saleMapper.updOrder(flag, orderID);
+    }
+
+    @Override
+    public List<Map> selOrderByID(String orderID) {
+        return saleMapper.selOrderByID(orderID);
     }
 
 }

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-//@Configuration
+@Configuration
 public class ShiroConfig {
     //ShiroFilterFactoryBean
     @Bean
@@ -28,17 +28,27 @@ public class ShiroConfig {
          */
         Map<String, String> filterMap = new LinkedHashMap<>();
         //授权
-//        filterMap.put("/user/add", "perms[user:add]");
-//        filterMap.put("/purchase/*", "perms[user:update]");
+        filterMap.put("/system/*", "perms[system:manager]");
+        filterMap.put("/supplier/*", "perms[purchase:supplier]");
+        filterMap.put("/purchase/*", "perms[purchase:order]");
+        filterMap.put("/sale/*", "perms[sale:order]");
+        filterMap.put("/customer/*", "perms[sale:customer]");
+        filterMap.put("/product/*", "perms[product:message]");
+        filterMap.put("/analysis/toSaleAnalysis/*","perms[analysis:sale]");
+        filterMap.put("/analysis/toProfitAnalysis/*", "perms[analysis:profit]");
+        filterMap.put("/stock/toStocktaking/*", "perms[stock:stocktaking]");
+        filterMap.put("/stock/stockManage/*", "perms[stock:stockManage]");
 
         filterMap.put("/index", "authc");
         filterMap.put("/login", "anon");
         filterMap.put("/toLogin", "anon");
         filterMap.put("/static/**", "anon");
         filterMap.put("/**", "user");
+        filterMap.put("/logout", "logout");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
         //设置登录的请求
         shiroFilterFactoryBean.setLoginUrl("/toLogin");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/error");
         shiroFilterFactoryBean.setSuccessUrl("/index");
         return shiroFilterFactoryBean;
     }

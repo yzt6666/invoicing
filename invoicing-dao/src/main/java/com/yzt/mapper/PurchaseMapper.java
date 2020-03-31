@@ -34,4 +34,6 @@ public interface PurchaseMapper {
     Integer updProduct(List<PurchaseOrderDetail> list);
 
     List<PurchaseOrderDetail> selDetail(String orderID);
+
+    List<Map> selOrderByID(String orderID);
 }

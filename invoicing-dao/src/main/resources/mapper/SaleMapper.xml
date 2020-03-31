@@ -15,7 +15,7 @@
     </select>
 
     <select id="selSaleOrderDetail" resultType="map">
-        select shipAddress, shipCity, shipPostalCode,
+        select distinct shipAddress, shipCity, shipPostalCode,
         productName, d.unitPrice, quantity, totalPrice
         from sale_order s, sale_order_detail d, products p
         where s.orderID = #{0} and s.orderID = d.orderID and d.productID = p.productID
@@ -101,5 +101,11 @@
 
     <select id="selDetail" resultType="saleOrderDetail">
         select * from sale_order_detail where orderID = #{0}
+    </select>
+
+    <select id="selOrderByID" resultType="map">
+        select distinct * from sale_order s, sale_order_detail d, products p, customers c, user_list u
+        where s.orderID = #{0} and s.orderID = d.orderID and d.productID = p.productID
+        and s.customerID = c.customerID and u.employeeID = s.employeeID
     </select>
 </mapper>

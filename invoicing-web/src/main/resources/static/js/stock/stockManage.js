@@ -76,8 +76,7 @@ function inbound(data) {
             url : "/stock/stockManage/inbound",
             data : JSON.stringify(orderID),
             contentType : "application/json",
-            dataType : "text",
-            success : function (data) {
+            success : function () {
                 tr.remove();
             },
             error : function () {

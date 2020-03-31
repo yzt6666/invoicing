@@ -20,6 +20,11 @@ public class SystemServiceImpl implements SystemService {
     }
 
     @Override
+    public Integer selCount() {
+        return systemMapper.selCount();
+    }
+
+    @Override
     public List<String> selByEmployeeID(Integer employeeID) {
         UserList userList = systemMapper.selByEmployeeID(employeeID);
         if (userList == null) {

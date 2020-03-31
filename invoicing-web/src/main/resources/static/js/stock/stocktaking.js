@@ -17,9 +17,8 @@ $(function () {
             url : "/stock/toStocktaking",
             data : JSON.stringify(stock),
             contentType : "application/json",
-            dataType : "text",
-            success : function (res) {
-                alert("success");
+            success : function () {
+                alert("移库成功");
                 window.location.href = "/stock/toStocktaking"
             }
         });

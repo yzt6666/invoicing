@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class SupplierController {
 
     private int count;
     private int totalPage;
-    private int pageSize = 10;
+    private int pageSize = 50;
 
     @RequestMapping(value = "toSupplier", method = RequestMethod.GET)
     public String toSupplier(Model model) {
@@ -133,8 +134,19 @@ public class SupplierController {
     @RequestMapping(value = "toSupplier/export", method = RequestMethod.GET)
     @ResponseBody
     public void exportExcel(HttpServletRequest req, HttpServletResponse resp) {
-        String companyName = req.getParameter("companyName");
-        List<Supplier> list = supplierService.selByCompanyName(companyName);
+        String companyNames = req.getParameter("companyName");
+        List<Supplier> list;
+        if (companyNames == "") {
+            list = supplierService.selAllSupplier();
+        } else {
+            String[] nameArray = companyNames.split(",");
+            List<String> res = new ArrayList<>();
+            for (String str : nameArray) {
+                res.add(str);
+            }
+            list = supplierService.selSupplierByNames(res);
+        }
+        System.out.println(list);
         String fileName = UUID.randomUUID() + ".xlsx";
         String[] title = {"供应商编号", "公司名称", "联系人", "联系人职位", "地址", "城市", "电话", "传真", "邮政编码"};
         String sheetName = "供应商信息表";
@@ -155,7 +167,6 @@ public class SupplierController {
         XSSFWorkbook workbook = excelUtil.getHSSFWorkbook(sheetName, title, content, null, null, null);
         try {
             this.setResponseHeader(resp, fileName);
-            System.out.println("hello");
             OutputStream os = resp.getOutputStream();
             workbook.write(os);
             os.flush();
@@ -164,6 +175,7 @@ public class SupplierController {
             e.printStackTrace();
         }
     }
+
     // 发送响应流方法
     public void setResponseHeader(HttpServletResponse response, String fileName) {
         try {

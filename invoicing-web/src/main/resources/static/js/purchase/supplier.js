@@ -70,8 +70,28 @@ function judgeVal() {
 
 //导出Excel
 function exportExcel() {
-    const companyName = $("#search").val();
-    window.location.href = "/supplier/toSupplier/export?companyName="+companyName;
+    if ($("#allSupplier").prop("checked")) {
+        const companyName = "";
+        window.location.href = "/supplier/toSupplier/export?companyName="+companyName;
+    } else {
+        let companyName = new Array();
+        $("input[name='supplier']").each(function () {
+            if ($(this).prop("checked")) {
+                const self = $(this);
+                const td = self.parent("td");
+                const tr = td.parent("tr");
+                const supplier = tr.find("td:eq(2)").text();
+                companyName.push(supplier);
+            }
+        });
+        console.log(companyName);
+        if (companyName.length == 0) {
+            alert("请选择需要下载的内容");
+            return;
+        }
+        window.location.href = "/supplier/toSupplier/export?companyName="+companyName;
+    }
+
 }
 
 //查询供应商
@@ -86,31 +106,7 @@ function searchSupplier() {
         data : {"companyName" : companyName},
         dataType: "json",
         success : function (data) {
-            $("#supplierItem tbody").empty();
-            for (let i = 0; i < data.length; i++) {
-                const res = data[i];
-                const tr = $("<tr></tr>");
-                const supplierID = $("<td></td>").append(res["supplierID"]);
-                const companyName = $("<td></td>").append(res["companyName"]);
-                const contactName = $("<td></td>").append(res["contactName"]);
-                const contactTitle = $("<td></td>").append(res["contactTitle"]);
-                const address = $("<td></td>").append(res["address"]);
-                const city = $("<td></td>").append(res["city"]);
-                const phone = $("<td></td>").append(res["phone"]);
-                const fax = $("<td></td>").append(res["fax"]);
-                const postalCode = $("<td></td>").append(res["postalCode"]);
-                const operation = $("<td></td>")
-                    .append($("<a onclick='edit(this)' class='btn btn-primary'></a>")
-                    .append($("<i class='glyphicon glyphicon-pencil'></i>")).append("编辑"))
-                    .append($("<a onclick='deleteSupplier(this)' class='btn btn-danger'></a>")
-                    .append($("<i class='glyphicon glyphicon-trash'></i>")).append("删除"));
-                tr.append(supplierID).append(companyName).append(contactName).append(contactTitle)
-                    .append(address).append(city).append(phone).append(fax).append(postalCode)
-                    .append(operation);
-                $("#supplierItem tbody").append(tr);
-            }
-            $("#count").html(data.length);
-            $("#page").remove();
+            buildTable(data);
         },
         error : function () {
 
@@ -123,7 +119,7 @@ function edit(dom) {
     const self = $(dom);
     const td = self.parent("td");
     const tr = td.parent("tr");
-    supplierID = tr.find("td:eq(0)").text();
+    supplierID = tr.find("td:eq(1)").text();
     $.ajax({
         type : "GET",
         url : "/supplier/toSupplier/id/" + supplierID,
@@ -191,3 +187,45 @@ function deleteSupplier(dom) {
     })
 }
 
+//复选框选中
+function selectAll(dom) {
+    if ($(dom).prop("checked")) {
+        $("input[name='supplier']").each(function () {
+            $(this).prop("checked", true);
+        });
+    } else {
+        $("input[name='supplier']").each(function () {
+            $(this).prop("checked", false);
+        });
+    }
+}
+
+//重建表
+function buildTable(data) {
+    $("#supplierItem tbody").empty();
+    for (let i = 0; i < data.length; i++) {
+        const res = data[i];
+        const tr = $("<tr></tr>");
+        const checkbox = $("<td></td>").append($("<input name='supplier' type='checkbox'/>"));
+        const supplierID = $("<td></td>").append(res["supplierID"]);
+        const companyName = $("<td></td>").append(res["companyName"]);
+        const contactName = $("<td></td>").append(res["contactName"]);
+        const contactTitle = $("<td></td>").append(res["contactTitle"]);
+        const address = $("<td></td>").append(res["address"]);
+        const city = $("<td></td>").append(res["city"]);
+        const phone = $("<td></td>").append(res["phone"]);
+        const fax = $("<td></td>").append(res["fax"]);
+        const postalCode = $("<td></td>").append(res["postalCode"]);
+        const operation = $("<td></td>")
+            .append($("<a onclick='edit(this)' class='btn btn-primary'></a>")
+                .append($("<i class='glyphicon glyphicon-pencil'></i>")).append("编辑"))
+            .append($("<a onclick='deleteSupplier(this)' class='btn btn-danger'></a>")
+                .append($("<i class='glyphicon glyphicon-trash'></i>")).append("删除"));
+        tr.append(checkbox).append(supplierID).append(companyName).append(contactName).append(contactTitle)
+            .append(address).append(city).append(phone).append(fax).append(postalCode)
+            .append(operation);
+        $("#supplierItem tbody").append(tr);
+    }
+    $("#count").html(data.length);
+    $("#page").remove();
+}

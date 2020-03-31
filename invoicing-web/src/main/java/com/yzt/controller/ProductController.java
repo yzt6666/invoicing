@@ -121,8 +121,16 @@ public class ProductController {
     @RequestMapping(value = "toProductMessage/{productID}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<Map>> findProduct(@PathVariable("productID") Integer productID) {
-        List<Map> map = productService.selByID(productID);
-        return ResponseEntity.ok(map);
+        try {
+            if (productID == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            List<Map> map = productService.selByID(productID);
+            return ResponseEntity.ok(map);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @RequestMapping(value = "toProductMessage/name/{productName}", method = RequestMethod.GET)

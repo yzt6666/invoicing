@@ -18,4 +18,8 @@ public interface SupplierMapper {
     Integer updSupplier(Supplier supplier);
 
     Integer delSupplier(Integer supplierID);
+
+    List<Supplier> selSupplierByNames(List<String> list);
+
+    List<Supplier> selAllSupplier();
 }

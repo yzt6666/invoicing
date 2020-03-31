@@ -98,4 +98,10 @@
     <select id="selDetail" resultType="purchaseOrderDetail">
         select * from purchase_order_detail where orderID = #{0}
     </select>
+
+    <select id="selOrderByID" resultType="map">
+        select distinct * from purchase_order o, purchase_order_detail d, products p, suppliers s, user_list u
+        where o.orderID = #{0} and o.orderID = d.orderID and d.productID = p.productID
+        and o.supplierID = s.supplierID and u.employeeID = o.employeeID
+    </select>
 </mapper>

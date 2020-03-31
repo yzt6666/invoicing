@@ -51,4 +51,15 @@
         select * from customers where customerID = #{0}
     </select>
 
+    <select id="selAllCustomer" resultType="customer">
+        select * from customers
+    </select>
+
+    <select id="selCustomerByNames" resultType="customer">
+        select * from customers
+        where companyName in
+        <foreach collection="list" item="companyName" index="index" open="(" separator="," close=")">
+            #{companyName}
+        </foreach>
+    </select>
 </mapper>

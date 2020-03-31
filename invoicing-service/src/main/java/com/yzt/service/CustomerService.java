@@ -18,4 +18,8 @@ public interface CustomerService {
     List<Customer> selByCompanyName(String companyName);
 
     Customer selByCustomerID(String customerID);
+
+    List<Customer> selAllCustomer();
+
+    List<Customer> selCustomerByNames(List<String> list);
 }

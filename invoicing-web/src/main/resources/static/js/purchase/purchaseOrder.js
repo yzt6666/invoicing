@@ -123,7 +123,7 @@ function buildTable(data) {
         const res = data[i];
         const tr = $("<tr></tr>");
         const expand = $("<td></td>")
-            .append($("<a href='' onclick='expandProduct(this);return false;'></a>")
+            .append($("<a href='' onclick='expandOrder(this);return false;'></a>")
                 .append($("<span class='fa fa-angle-right' style='color: black'></span>")))
         const orderID = $("<td></td>").append(res["orderID"]);
         const companyName = $("<td></td>").append(res["companyName"]);
@@ -136,12 +136,16 @@ function buildTable(data) {
                 .append($("<a onclick='returnOrder(this)' class='btn btn-warning'></a>")
                     .append($("<i class='glyphicon glyphicon-file'></i>")).append("退单"))
                 .append($("<a onclick='deleteOrder(this)' class='btn btn-danger'></a>")
-                    .append($("<i class='glyphicon glyphicon-trash'></i>")).append("删除"));
+                    .append($("<i class='glyphicon glyphicon-trash'></i>")).append("删除"))
+                .append($("<a onclick='exportExcel(this);' class='btn btn-success'></a>")
+                    .append($("<i class='glyphicon glyphicon-save'></i>")).append("下载"));
             console.log(operation);
         } else {
             operation = $("<td></td>")
                 .append($("<a onclick='deleteOrder(this)' class='btn btn-danger'></a>")
-                    .append($("<i class='glyphicon glyphicon-trash'></i>")).append("删除"));
+                    .append($("<i class='glyphicon glyphicon-trash'></i>")).append("删除"))
+                .append($("<a onclick='exportExcel(this);' class='btn btn-success'></a>")
+                    .append($("<i class='glyphicon glyphicon-save'></i>")).append("下载"));
         }
         tr.append(expand).append(orderID).append(companyName).append(username).append(orderDate).append(remark)
             .append(operation);
@@ -195,4 +199,13 @@ function returnOrder(dom) {
             alert("退单失败");
         }
     });
+}
+
+//导出Excel
+function exportExcel(dom) {
+    const self = $(dom);
+    const td = self.parent("td");
+    const tr = td.parent("tr");
+    const orderID = tr.find("td:eq(1)").text();
+    window.location.href = "/purchase/purchaseOrder/export?orderID="+orderID;
 }

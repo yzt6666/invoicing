@@ -6,6 +6,7 @@ import com.yzt.service.PurchaseService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.security.auth.Subject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,16 +35,15 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
-    public Integer insPurchaseOrder(List<Map<String, String>> list) {
+    public Integer insPurchaseOrder(List<Map<String, String>> list, Integer employeeID) {
         Date date = new Date();
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         DateFormat idSdf = new SimpleDateFormat("yyyyMMddHHmmss");
         String orderDate = sdf.format(date.getTime());
         String orderID = idSdf.format(date);
-        String flag = "未到货";
+        String flag = "未完成";
         String remark = list.get(0).get("remark");
         Integer supplierID = Integer.valueOf(list.get(0).get("supplierID"));
-        Integer employeeID = 3;
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         purchaseOrder.setEmployeeID(employeeID);
         purchaseOrder.setOrderDate(orderDate);
@@ -91,6 +91,11 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     public Integer delOrder(String orderID) {
         return purchaseMapper.delOrder(orderID);
+    }
+
+    @Override
+    public List<Map> selOrderByID(String orderID) {
+        return purchaseMapper.selOrderByID(orderID);
     }
 
     @Override
