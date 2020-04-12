@@ -55,4 +55,14 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.selByProductName(productName);
     }
 
+    @Override
+    public Integer updImg(String productName, String imgPath) {
+        return productMapper.updImg(productName, imgPath);
+    }
+
+    @Override
+    public String selImgPath(Integer productID) {
+        return productMapper.selImgPath(productID);
+    }
+
 }

@@ -19,5 +19,9 @@ public interface ProductService {
     Integer delProduct(Integer productID);
 
     List<Map> selByProductName(String productName);
+
+    Integer updImg(String productName, String imgPath);
+
+    String selImgPath(Integer productID);
 }
 

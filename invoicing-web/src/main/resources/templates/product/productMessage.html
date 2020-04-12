@@ -180,16 +180,17 @@
     <div class="supplier-container">
         <article class="common-article">
             <div class="common-header">
-            <span class="float-left">
-                <a onclick="addNewProduct();" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>新增产品</a>
-            </span>
-            <span class="float-center">
-                产品名称：
-                <input type="text" id="search" name="search" size="10"/>
-                <a onclick="searchProduct()" class="btn btn-success">查询<i class="glyphicon glyphicon-search"></i></a>
-            </span>
-            <span class="pd-5 float-right">共有数据：<strong id="count" th:text="${count}"></strong>条</span>
+                <span class="float-left">
+                    <a onclick="addNewProduct();" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>新增产品</a>
+                </span>
+                <span class="float-center">
+                    产品名称：
+                    <input type="text" id="search" name="search" size="10"/>
+                    <a onclick="searchProduct()" class="btn btn-success">查询<i class="glyphicon glyphicon-search"></i></a>
+                </span>
+                <span class="pd-5 float-right">共有数据：<strong id="count" th:text="${count}"></strong>条</span>
             </div>
+
             <div class="common-body">
                 <table id="productItem" class="table table-bordered table-hover table-striped">
                     <thead>
@@ -214,6 +215,7 @@
                         <td th:text="${products.unitPrice}"></td>
                         <td th:text="${products.companyName}"></td>
                         <td>
+                            <a onclick="getImg(this);" class="btn btn-success"><i class="glyphicon glyphicon-search"></i>查看图片</a>
                             <a onclick="edit(this);" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i>编辑</a>
                             <a onclick="deleteProduct(this);" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i>删除</a>
                         </td>
@@ -320,6 +322,14 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="productImg" class="col-sm-2 control-label">
+                            <span style="color: red">*</span>产品图片：
+                        </label>
+                        <div class="col-sm-9">
+                            <input type="file" id="productImg" name="productImg" accept=".jpg,.png"/>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -333,5 +343,22 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="newImage" aria-label="supplierModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">查看图片</h4>
+            </div>
+            <div class="modal-body">
+                <img id="img" src="">
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

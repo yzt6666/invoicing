@@ -11,6 +11,15 @@ public class Product {
     private int unitsInStock;
     private int unitsOnOrder;
     private String categoryName;
+    private String ImgPath;
+
+    public String getImgPath() {
+        return ImgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        ImgPath = imgPath;
+    }
 
     public String getCategoryName() {
         return categoryName;

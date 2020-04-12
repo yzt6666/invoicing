@@ -5,6 +5,7 @@ function addNewProduct() {
     $("input[name='product']").each(function () {
         $(this).attr("value", "");
     });
+    $("input[name='productImg']").prop("value", "");
     $("#saveButton").attr("onclick", "addProduct()");
     $("#productID").attr("readOnly", false);
     $("#newProduct").modal("show");
@@ -21,19 +22,21 @@ function addProduct() {
             "supplierID" : $("#supplierID").val(),
             "categoryID" : $("#categoryID").val()
         };
+
         $.ajax({
             type : "POST",
             url : "/product/toProductMessage",
             data : JSON.stringify(data),
             contentType : "application/json",
             success : function () {
-                alert("添加成功");
-                window.location.href = "/product/toProductMessage";
+
             },
             error : function () {
                 alert("添加失败");
+                return;
             }
         });
+        productImg();
     }
 }
 
@@ -42,6 +45,7 @@ function judgeVal() {
     const productName = $("#productName").val();
     const unitPrice = $("#unitPrice").val();
     const quantityPerUnit = $("#quantityPerUnit").val();
+    const file = $("#productImg")[0].files[0];
     if (productName == "" || productName == null) {
         alert("产品名称不能为空");
         return false;
@@ -52,6 +56,10 @@ function judgeVal() {
     }
     if (unitPrice == "" || unitPrice == null) {
         alert("单价不能为空");
+        return false;
+    }
+    if (file == null) {
+        alert("请选择产品图片");
         return false;
     }
     return true;
@@ -104,13 +112,12 @@ function searchProduct() {
     });
 }
 
-//编辑供应商
+//编辑产品信息
 function edit(dom) {
     const self = $(dom);
     const td = self.parent("td");
     const tr = td.parent("tr");
     productID = tr.find("td:eq(1)").text();
-
     $.ajax({
         type : "GET",
         url : "/product/toProductMessage/" + productID,
@@ -148,23 +155,24 @@ function saveChange() {
             "supplierID" : $("#supplierID").val(),
             "categoryID" : $("#categoryID").val()
         };
-        console.log(data);
         $.ajax({
             type : "PUT",
             url : "/product/toProductMessage",
             data : JSON.stringify(data),
             contentType : "application/json",
             success : function () {
-                alert("修改成功!");
-                window.location.href = "/product/toProductMessage";
+
             },
             error : function () {
                 alert("修改失败");
+                return;
             }
         })
+        productImg();
     }
 }
 
+//删除产品信息
 function deleteProduct(dom) {
     const self = $(dom);
     const td = self.parent("td");
@@ -231,3 +239,50 @@ function expandProduct(dom) {
     }
 }
 
+function productImg() {
+    const file = $("#productImg")[0].files[0];
+
+    if (file != null) {
+        const formData = new FormData();
+        formData.append("name", file.name);
+        formData.append("file", file);
+        formData.append("productName", $("#productName").val());
+        $.ajax({
+            type : "POST",
+            url : "/product/toProductMessage/addImg",
+            data : formData,
+            processData : false,
+            contentType : false,
+            success : function () {
+                alert("修改成功!");
+                window.location.href = "/product/toProductMessage";
+            },
+            error : function () {
+                alert("修改失败");
+            }
+        });
+    }
+}
+
+function getImg(dom) {
+    const self = $(dom);
+    const td = self.parent("td");
+    const tr = td.parent("tr");
+    const productID = tr.find("td:eq(1)").text();
+    const imgUrl = "/static/img/";
+    $.ajax({
+        type : "GET",
+        url : "/product/toProductMessage/img?productID="+productID,
+        dataType : "text",
+        success : function (res) {
+            console.log(res);
+            $("#img").attr("src", imgUrl+res);
+            $("#newImage").modal("show");
+        },
+        error : function () {
+            alert("找不到图片");
+        }
+    });
+
+
+}

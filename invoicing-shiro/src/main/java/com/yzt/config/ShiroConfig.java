@@ -43,7 +43,7 @@ public class ShiroConfig {
         filterMap.put("/login", "anon");
         filterMap.put("/toLogin", "anon");
         filterMap.put("/static/**", "anon");
-        filterMap.put("/**", "user");
+//        filterMap.put("/**", "user");
         filterMap.put("/logout", "logout");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
         //设置登录的请求

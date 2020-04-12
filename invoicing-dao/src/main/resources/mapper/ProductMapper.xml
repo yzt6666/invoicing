@@ -16,7 +16,17 @@
     </select>
 
     <insert id="insProduct">
-        insert into products values
+        insert into products
+        (
+            productID,
+            productName,
+            supplierID,
+            categoryID,
+            quantityPerUnit,
+            unitPrice,
+            unitsOnOrder
+        )
+        values
         (
             default,
             #{productName},
@@ -51,5 +61,13 @@
     <select id="selByProductName" resultType="map">
         select productID, productName, unitPrice, companyName from products p, suppliers s
         where productName like "%"#{0}"%" and p.supplierID = s.supplierID
+    </select>
+
+    <update id="updImg">
+        update products set imgPath = #{1} where productName = #{0}
+    </update>
+
+    <select id="selImgPath" resultType="string">
+        select imgPath from products where productID = #{0}
     </select>
 </mapper>

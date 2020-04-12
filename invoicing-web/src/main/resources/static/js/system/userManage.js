@@ -103,9 +103,9 @@ function recover() {
     const formData = new FormData();
     formData.append("name", file.name);
     formData.append("file", file);
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    console.log(reader);
+    // const reader = new FileReader();
+    // reader.readAsDataURL(file);
+    // console.log(reader);
     $.ajax({
         type : "POST",
         url : "/system/recover",

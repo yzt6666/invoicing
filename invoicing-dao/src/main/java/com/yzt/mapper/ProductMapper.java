@@ -22,4 +22,8 @@ public interface ProductMapper {
     Integer insStock();
 
     List<Map> selByProductName(String productName);
+
+    Integer updImg(String productName, String imgPath);
+
+    String selImgPath(Integer productID);
 }
